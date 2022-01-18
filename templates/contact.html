@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <title>Document</title>
+</head>
+<body>
+    <section class="contact">
+        <div class="container mt-2">
+            <h2>Обратная связь</h2>
+            <p>Если у вас возникли проблемы, напишите в поддержку через форму обратной связи ниже.</p>
+            
+            {% for cat,msg in get_flashed_messages(True) %}
+            <div class="{{cat}}" role="alert">
+                {{msg}}
+            </div>
+            {% endfor %}
+
+            <form action='/contact' method='post' class="row g-3 needs-validation" novalidate>
+              <div class="col-12">
+                <label for="validationCustom01" class="form-label">Ваше имя</label>
+                <input type="text" class="form-control" name='username' id="validationCustom01" placeholder="Исак" required>
+              </div>
+              <div class="col-12">
+                <label for="exampleFormControlInput1" class="form-label">E-mail</label>
+                <div class="input-group">
+                  <input type="email" name='email' class="form-control" id="exampleFormControlInput1" aria-describedby="emailHelp" placeholder="isak@example.com" required>
+                </div>
+                <small id="passwordHelpBlock" class="form-text text-muted">E-mail используется только для обратной связи.</small>
+              </div>
+              <div class="col-12">
+                <label for="validationCustom03" class="form-label">Описание</label>
+                <textarea class='form-control' name="message" id="" rows=10%></textarea>
+              </div>
+              <div class="col-12 d-flex">
+                <button class="btn btn-primary" type="submit">Отправить</button>
+              </div>
+            </form>
+        </div>
+    </section>
+
+</body>
+</html>
+

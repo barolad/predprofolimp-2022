@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <title>Регистрация</title>
+</head>
+<body>
+    <section class="contact">
+        <div class="container mt-1">
+            <h2 class="text-center mb-5">Зарегистрируйтесь в&#160;WEBUDGET</h2>
+            <!-- <p>Если у вас возникли проблемы, напишите в поддержку через форму обратной связи ниже.</p> -->
+            
+            {% for cat,msg in get_flashed_messages(True) %}
+            <div class="{{cat}}" role="alert">
+                {{msg}}
+            </div>
+            {% endfor %}
+
+            <form action='/registration' method='post' class="row g-2 needs-validation" novalidate>
+              <div class="col-12">
+                <label for="validationCustom01" class="form-label">Введите логин</label>
+                <input type="text" class="form-control" name='username' id="validationCustom01" placeholder="Example" required>
+              </div>
+              <div class="col-12">
+                <label for="validationCustom01" class="form-label">Введите имя</label>
+                <input type="text" class="form-control" name='firstname' id="validationCustom01" placeholder="Исак" required>
+              </div>
+              <div class="col-12">
+                <label for="exampleFormControlInput1" class="form-label">E-mail</label>
+                <div class="input-group">
+                  <input type="email" name='email' class="form-control" id="exampleFormControlInput1" aria-describedby="emailHelp" placeholder="isak@example.com" required>
+                </div>
+              </div>
+              <div class="col-12">
+                <label for="exampleFormControlInput1" class="form-label">Пароль</label>
+                <div class="input-group">
+                  <input type="password" name='psw' class="form-control" id="exampleFormControlInput1" aria-describedby="passwordHelpBlock" required>
+                </div>
+                 <small id="passwordHelpBlock" class="form-text text-muted">От 5 до 20 символов</small>
+              </div>
+              <div class="col-12">
+                <label for="exampleFormControlInput1" class="form-label">Повтор пароля</label>
+                <div class="input-group">
+                  <input type="password" name='psw2' class="form-control" id="exampleFormControlInput1" aria-describedby="passwordHelpBlock" required>
+                </div>
+              </div>
+              <div class="d-grid gap-2 d-md-block">
+                <button class="btn btn-primary mt-3" type="submit" style="height: 66px;">Зарегистрироваться</button>
+              </div>
+              <div class="container col-12">
+                  <p class="link-primary text-center mt-3"><u>НА ГЛАВНУЮ</u></p>
+              </div>
+            </form>
+        </div>
+    </section>
+</body>
+</html>
