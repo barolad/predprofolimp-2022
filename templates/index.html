@@ -12,12 +12,12 @@
     <title>Document</title>
     <style>
         body{
-            background-color: #121212;
+            background-color: #f9f9f9;
         }
         .bottom-menu{
-            background-color: #293437;
-            color: white;
-            border-top: 1px solid black;
+            background-color: #f9f9f9;
+            color: #777777;
+            border-top: 1px solid #a9a9a9;
         }
         .menu-button{
             background-color: #4a8ef1;
@@ -44,22 +44,25 @@
         </div>
     </nav> -->
     <div class="input-group rounded mt-1">
-        <input style="border-radius: 10px!important; height: 30px; background-color: #363636; border: none; color: #9b9b9b;" type="search" class="form-control rounded mx-1" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon" />
-        <span style="background-color: rgba(0, 0, 0, 0); color: white;" class="input-group-text border-0" id="search-addon">
+        <input style="border-radius: 10px!important; height: 30px; background-color: #D2D6DC; border: none; color: #9b9b9b;" type="search" class="form-control rounded mx-1" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon" />
+        <span style="background-color: #d2d6dc; color: #777777;" class="input-group-text border-0" id="search-addon">
           <i class="fa fa-search"></i>
         </span>
       </div>
+    <!-- Основная страничька-->
+
+    
     <!-- Нижнее меню -->
     <div class="container fixed-bottom bottom-menu">
         <div class="row mx-1">
             <div class="col-12  d-flex flex-row justify-content-between">
-                <i class="py-3 fa fa-user" aria-hidden="true"></i>
-                <i class="py-3 fa fa-chart-line" aria-hidden="true"></i>
-                <div style="top: -15px !important;" class="menu-button d-flex justify-content-center align-items-center position-relative">
-                    <i class="py-3 fa fa-plus" aria-hidden="true"></i>
+                <a href="#" style="color:inherit"><i class="py-3 fa fa-user" aria-hidden="true"></i></a>
+                <a href="#" style="color:inherit"><i class="py-3 fa fa-chart-line" aria-hidden="true"></i></a>
+                <div style="color:#f9f9f9; top: -15px !important;" class="menu-button d-flex justify-content-center align-items-center position-relative">
+                    <a href="{{url_for('addPayment')}}" style="color:#f9f9f9"><i class="py-3 fa fa-plus" aria-hidden="true"> </i> </a>
                 </div>
-                <i class="py-3 fa fa-history" aria-hidden="true"></i>
-                <i class="py-3 fa fa-cog" aria-hidden="true"></i>
+                <a href="#" style="color:inherit"><i class="py-3 fa fa-history" aria-hidden="true"></i></a>
+                <a href="#" style="color:inherit"><i class="py-3 fa fa-cog" aria-hidden="true"></i></a>
             </div>
         </div>
     </div>
