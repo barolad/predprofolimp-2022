@@ -1,6 +1,7 @@
 from flask_login import UserMixin
 from flask import url_for
 
+
 class UserLogin(UserMixin):
     def fromDB(self, user_id, db):
         self.__user = db.getUser(user_id)
@@ -26,7 +27,7 @@ class UserLogin(UserMixin):
                 with app.open_resource(app.root_path + url_for('static', filename='images/default.png'), "rb") as f:
                     img = f.read()
             except FileNotFoundError as e:
-                print("Не найден аватар по умолчанию: "+str(e))
+                print("Не найден аватар по умолчанию: " + str(e))
         else:
             img = self.__user['avatar']
 
