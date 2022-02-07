@@ -49,14 +49,14 @@ class DataBaseAPI:
             select_query_email = select([self.__users_table]).where(
                 self.__users_table.c.email == email
             )
-            check_email = self.__connection.execute(select_query_email).rowcount == 0
+            check_email = self.__connection.execute(select_query_email).rowcount <= 0
             if not check_email:
                 flash("Пользователь с таким email уже существует")
                 return False
             select_query_username = select([self.__users_table]).where(
                 self.__users_table.c.username == username
             )
-            check_username = self.__connection.execute(select_query_username).rowcount == 0
+            check_username = self.__connection.execute(select_query_username).rowcount <= 0
             if not check_username:
                 flash("Пользователь с таким логином уже существует")
                 return False
@@ -81,7 +81,7 @@ class DataBaseAPI:
             )
             select_result = self.__connection.execute(select_query).fetchone()
             if select_result is None:
-                flash("Пользователь не найден")
+                flash("Пользователь не найден", category='alert alert-danger')
                 return False
             # if select_result["psw"] != hpsw:
             #    flash("Попытка взлома: ошибка при сверении хэшей паролей")
@@ -101,7 +101,7 @@ class DataBaseAPI:
             )
             select_result = self.__connection.execute(select_query).fetchone()
             if select_result is None:
-                flash("Пользователь не найден")
+                flash("Пользователь не найден", category='alert alert-danger')
                 return False
             # if select_result["psw"] != hpsw:
             #    flash("Попытка взлома: ошибка при сверении хэшей паролей")
@@ -123,7 +123,7 @@ class DataBaseAPI:
             )
             select_result = self.__connection.execute(select_query).fetchone()
             if select_result is None:
-                flash("Пользователь не найден")
+                flash("Пользователь не найден", category='alert alert-danger')
                 return False
             # if select_result["psw"] != hpsw:
             #    flash("Попытка взлома: ошибка при сверении хэшей паролей")

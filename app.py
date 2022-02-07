@@ -6,21 +6,20 @@ from flask_login import LoginManager, login_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from UserLogin import UserLogin
 
-DATABASE = '/tmp/database.db'
-DEBUG = True
-SECRET_KEY = 'ee71d2fce7f1013378f6f73e1bc144020934702c'
-MAX_CONTENT_LENGTH = 1024 * 1024
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'isaktimurov'
+app.debug = True
 app.config.from_object(__name__)
-app.config.update(dict(SQLALCHEMY_DATABASE_URI="mysql://root:@localhost/appdatabase"))
+#app.config.update(dict(SQLALCHEMY_DATABASE_URI="sqlite:///sqlitedatabase.db"))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlitedatabase.db?check_same_thread=False'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message = "Вы не авторизованы!"
 login_manager.login_message_category = "alert alert-danger"
 
+dbase = DataBaseAPI(app)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -28,20 +27,9 @@ def load_user(user_id):
     return UserLogin().fromDB(user_id, dbase)
 
 
-dbase = None
-
-
-@app.before_request
-def before_request():
-    """Установление соединения с БД перед выполнением запроса"""
-    global dbase
-    dbase = DataBaseAPI(app)
-
-
 @app.route('/')
 @login_required
 def index():
-    dbase = DataBaseAPI(app)
     print(url_for('index'))
     return render_template('index.html')
 
@@ -118,4 +106,4 @@ def pageNotFount(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
