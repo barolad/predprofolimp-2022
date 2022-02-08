@@ -7,8 +7,7 @@
   <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/all.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
   <title>Новая запись</title>
 </head>
 <body>
@@ -17,7 +16,7 @@
             background-color: #f9f9f9;
         }
         input{
-            height: 66px;
+            /* height: 33px; */
             font-size: large;
         }
         input::-webkit-input-placeholder {
@@ -41,56 +40,75 @@
     </style>
 </head>
 <body>
-  <div class="input-group rounded mt-1">
-    <input style="border-radius: 10px!important; height: 30px; background-color: #D2D6DC; border: none; color: #9b9b9b;" type="search" class="form-control rounded mx-1" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon" />
-    <span style="background-color: #d2d6dc; color: #777777;" class="input-group-text border-0" id="search-addon">
-      <i class="fa fa-search"></i>
-    </span>
-  </div>
-    <section class="addPayment">
-        <div class="container mt-2 position-absolute top-50 start-50 translate-middle" style="top:38%!important">
-            <h2 class="text-center mb-5">Новая запись</h2>
-            <!-- <p>Если у вас возникли проблемы, напишите в поддержку через форму обратной связи ниже.</p> -->
-            
-            {% for cat,msg in get_flashed_messages(True) %}
-            <div class="{{cat}}" role="alert">
-                {{msg}}
-            </div>
-            {% endfor %}
-          
-    <form>
-        <div class="form-group row">
-          <label for="text" class="col-4 col-form-label">Описание</label> 
-          <div class="col-12">
-            <input id="text" name="text" type="text" class="form-control" required="required" placeholder="Короткое описание">
-          </div>
+        <div class="input-group rounded mt-1">
+          <input style="border-radius: 10px!important; height: 30px; background-color: #D2D6DC; border: none; color: #9b9b9b;" type="search" class="form-control rounded mx-1" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon" />
+          <span style="background-color: #d2d6dc; color: #777777;" class="input-group-text border-0" id="search-addon">
+            <i class="fa fa-search"></i>
+          </span>
         </div>
-            <div class="input-group">
-                <div class="input-group-text">Руб</div>
-                <input type="number" min="0.00" step="0.05" value="1.00" id="exampleInputAmount" class="form-control" placeholder="Price">
-            </div>
-        <div class="form-group row"  style="margin-top: 1%" >
-          <label for="categoriesSelector" class="col-4 col-form-label" >Категория</label> 
-          <div class="col-8">
-            <select id="categoriesSelector" name="categoriesSelector" class="form-select form-select-lg mb-3">
-              <option value="food">Супермаркеты</option>
-              <option value="study">Образование</option>
-              <option value="cinema">Кино</option>
-              <option value="transfer">Переводы</option>
-              <option value="another">Другое</option>
-            </select>
+        <section class="addpay">
+          <div class="container mt-3">
+              <h2 class="text-center mb-3">Новая запись</h2>
+              <!-- <p>Если у вас возникли проблемы, напишите в поддержку через форму обратной связи ниже.</p> -->
+              
+              {% for cat,msg in get_flashed_messages(True) %}
+              <div class="{{cat}}" role="alert">
+                  {{msg}}
+              </div>
+              {% endfor %}
+  
+              <form action='/add_payment' method='post' class="row g-2 needs-validation" novalidate>
+                <!-- <div class="col-12">
+                  <label for="validationCustom01" class="form-label">Введите логин</label>
+                  <input type="text" class="form-control" name='username' id="validationCustom01" placeholder="Example" required>
+                </div> -->
+                <div class="col-12">
+                  <label for="validationCustom01" class="form-label">Сумма</label>
+                  <div class="input-group">
+                    <div class="input-group-text">Руб</div>
+                    <input type="number" name='sum' min="0.00" step="0.50" value="1.00" id="exampleInputAmount" class="form-control" placeholder="100,00">
+                </div>
+                </div>
+                <div class="col-12">
+                  <label for="exampleFormControlInput1" class="form-label">Категория</label>
+                  <div class="input-group">
+                    <div class="input-group-text"><span class="material-icons">category</span></div>
+                    <select id="inputState" class="form-control" name='category'>
+                      <option value="food"> Супермаркеты</option>
+                      <option value="study">Образование</option>
+                      <option value="cinema">Кино</option>
+                      <option value="transfer">Переводы</option>
+                      <option value="another">Другое</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <label for="exampleFormControlInput1" class="form-label">Дата</label>
+                  <div class="input-group">
+                    <input type="date" class="form-control" id="date" name="date" placeholder="Дата" required>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <label for="exampleFormControlInput1" class="form-label">Время</label>
+                  <div class="input-group">
+                    <input type="time" class="form-control" id="time" name="time" placeholder="Дата" required>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label for="validationCustom03" class="form-label">Описание</label>
+                  <textarea class='form-control' name="message" id="" rows=1%></textarea>
+                </div>
+                <div class="d-grid gap-2 d-md-block">
+                  <button class="btn btn-primary mt-3" type="submit" style="height: 66px;">Добавить</button>
+                </div>
+              </form>
           </div>
-        </div> 
-        <div class="form-group row">
-          <div class="d-grid gap-2 d-md-block" ></div>
-            <button name="submit" type="submit" class="btn btn-primary" style="height: 66px; width: 90%; margin-left: 5%;">Добавить</button>
-          </div>
-          <!-- <div class="container col-12">
-            <p class="link-primary text-center"><a href="{{url_for('index')}}" style="margin-top: 1%"><u>ВЕРНУТЬСЯ</u></p>
-        </div> -->
-        </div>
-        </form>
     </section>
+
+
+
+
+    
     <!-- Нижнее меню -->
     <div class="container fixed-bottom bottom-menu">
       <div class="row mx-1">
@@ -101,8 +119,16 @@
                   <a href="#" style="color:#f9f9f9"><i class="py-3 fa fa-plus" aria-hidden="true"> </i> </a>
               </div>
               <a href="#" style="color:inherit"><i class="py-3 fa fa-history" aria-hidden="true"></i></a>
-              <a href="#" style="color:inherit"><i class="py-3 fa fa-cog" aria-hidden="true"></i></a>
-          </div>
+              <div class="btn-group dropup">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Вверх</button>
+                <a href="#" style="color:inherit"><i class="py-3 fa fa-cog " aria-hidden="true"></i></a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="">1</a></li>
+                  <li><a class="dropdown-item" href="">2</a></li>
+                  <li><a class="dropdown-item" href="">3</a></li>
+                </ul>
+              </div>
+            </div>
       </div>
   </div>
 </body>
