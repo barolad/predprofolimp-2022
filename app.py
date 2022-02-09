@@ -52,7 +52,7 @@ def login():
     return render_template('login.html')
 
 
-@app.route("/add_payment")
+@app.route("/add_payment", methods=["POST", "GET"])
 def addPayment():
     if request.method == "POST":
         if len(request.form['name']) > 4 and len(request.form['post']) > 10:
@@ -84,7 +84,7 @@ def registration():
             else:
                 flash('Ошибка при добавлении в базу данных.', category='alert alert-danger')
         else:
-            flash('Неаверно заполнены поля.', category='alert alert-danger')
+            flash('Неверно заполнены поля.', category='alert alert-danger')
     return render_template('registration.html')
 
 
@@ -98,6 +98,11 @@ def contact():
             flash('Ошибка! Обращение не отправлено ', category='alert alert-danger')
 
     return render_template('contact.html')
+
+
+@app.route('/history', methods=['POST', 'GET'])
+def history():
+    return render_template('history.html')
 
 
 @app.errorhandler(404)
