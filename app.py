@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'isaktimurov'
 app.debug = True
 app.config.from_object(__name__)
-#app.config.update(dict(SQLALCHEMY_DATABASE_URI="sqlite:///sqlitedatabase.db"))
+# app.config.update(dict(SQLALCHEMY_DATABASE_URI="sqlite:///sqlitedatabase.db"))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlitedatabase.db?check_same_thread=False'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
@@ -20,6 +20,7 @@ login_manager.login_message = "Вы не авторизованы!"
 login_manager.login_message_category = "alert alert-danger"
 
 dbase = DataBaseAPI(app)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -55,14 +56,16 @@ def login():
 @app.route("/add_payment", methods=["POST", "GET"])
 def addPayment():
     if request.method == "POST":
-        if len(request.form['name']) > 4 and len(request.form['post']) > 10:
-            res = dbase.addPost(request.form['name'], request.form['post'], request.form['url'])
+        if len(request.form['time']) > 0 and len(request.form['time']) > 0:
+            res = dbase.addPost(current_user.get_id(), request.form['sum'], request.form['category'],
+                                request.form['date'],
+                                request.form['time'], request.form['message'])
             if not res:
                 flash('Ошибка добавления статьи', category='error')
             else:
                 flash('Статья добавлена успешно', category='success')
         else:
-            flash('Ошибка добавления статьи', category='error')
+            flash('Неверно заполнены поля даты и времени', category='error')
     return render_template('add_payment.html')
 
 
@@ -102,7 +105,16 @@ def contact():
 
 @app.route('/history', methods=['POST', 'GET'])
 def history():
-    return render_template('history.html')
+    dbase.getData(int(current_user.get_id()))
+    return render_template('history2.html', list=dbase.getData(
+        current_user.get_id()))  # list=[{"amount":100,"category":"test","description":"test2"}])
+
+
+@app.route('/test', methods=['POST', 'GET'])
+def test():
+    if request.method == 'POST':
+        pass
+    return render_template('test.html')
 
 
 @app.errorhandler(404)

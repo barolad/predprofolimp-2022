@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+        <ul>
+            {%for u in list:%}
+            <li><p>amount:{{u.amount}},category:{{u.category}}</p>
+                <ul>
+                    <li>desc:{{u.description}}</li>
+                </ul>
+            </li>
+            {%endfor%}
+        </ul>
+</body>
+</html>

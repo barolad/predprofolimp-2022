@@ -1,6 +1,6 @@
 from flask import flash
 from sqlalchemy import create_engine, MetaData, Table, String, Integer, Column, Text, DateTime, Boolean, BLOB, select, \
-    insert, BINARY, update
+    insert, BINARY, update, Float
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 import pymysql
@@ -24,16 +24,17 @@ class DataBaseAPI:
                                    Column('firstname', Text(), primary_key=False, nullable=False),
                                    Column('email', Text(), primary_key=False, nullable=False),
                                    Column('psw', Text(), primary_key=False, nullable=False),
-                                   Column('avatar', BINARY(), primary_key=False, default=None),
+                                   Column('avatar', BLOB(), primary_key=False, default=None),
                                    Column('time', Text(), primary_key=False, nullable=False),
                                    )
         self.__user_data_table = Table('user_data', self.__metadata,
                                        Column('id', Integer(), primary_key=True, autoincrement=True),
                                        Column('user_id', Integer(), primary_key=False, nullable=False),
-                                       Column('amount', Integer(), primary_key=False, nullable=False),
+                                       Column('amount', Float(), primary_key=False, nullable=False),
                                        Column('category', Integer(), primary_key=False, nullable=False),
                                        Column('description', Text(), primary_key=False, nullable=False),
                                        Column('time', Text(), primary_key=False, nullable=False),
+                                       Column('date', Text(), primary_key=False, nullable=False)
                                        )
         self.__feedback_table = Table('feedback', self.__metadata,
                                       Column('id', Integer(), primary_key=True, autoincrement=True),
@@ -153,3 +154,36 @@ class DataBaseAPI:
             print("Ошибка отправки сообщения " + str(e))
             return False
         return True
+
+    def addPost(self, user_id, summ, category, date, time, message):
+        try:
+            insert_query = insert(self.__user_data_table).values(
+                user_id=int(user_id),
+                amount=float(summ),
+                category=category,
+                description=message,
+                time=time,
+                date=date
+            )
+            self.__connection.execute(insert_query)
+        except BaseException as e:
+            print("Ошибка добавления записи" + str(e))
+            return False
+        return True
+        pass
+    def getData(self, user_id):
+        try:
+            select_query = select([self.__user_data_table]).where(
+                self.__user_data_table.c.user_id == user_id
+            )
+            select_result = self.__connection.execute(select_query)
+            if select_result is None:
+                flash("Пользователь не найден", category='alert alert-danger')
+                return False
+            return select_result
+        except BaseException as e:
+            print("Ошибка добавления записи" + str(e))
+            return False
+        return True
+        pass
+
