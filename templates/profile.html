@@ -1,0 +1,20 @@
+{% for cat, msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+<table border="0" class="profile-table">
+	<tr><td valign="top">
+		<div class="profile-ava"><img src="{{ url_for('avatar') }}"></div>
+		<div class="profile-load">
+		<form action="{{url_for('profile')}}" method="POST" enctype="multipart/form-data">
+			<p><input type="file" name="file">
+			<p><input type="submit" value="Загрузить">
+		</form>
+		</div>
+	</td>
+	<td valign="top" class="profile-panel">
+		<ul class="profile-info">
+		<li>Имя: {{ current_user.getName() }}</li>
+		<li>Email: {{ current_user.getEmail() }}</li>
+		</ul>
+	</td></tr>
+</table>

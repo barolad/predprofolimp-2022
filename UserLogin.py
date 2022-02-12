@@ -24,7 +24,7 @@ class UserLogin(UserMixin):
         img = None
         if not self.__user['avatar']:
             try:
-                with app.open_resource(app.root_path + url_for('static', filename='images/default.png'), "rb") as f:
+                with app.open_resource(app.root_path + url_for('static', filename='default_avatar.jpg'), "rb") as f:
                     img = f.read()
             except FileNotFoundError as e:
                 print("Не найден аватар по умолчанию: " + str(e))
@@ -33,8 +33,3 @@ class UserLogin(UserMixin):
 
         return img
 
-    def verifyExt(self, filename):
-        ext = filename.rsplit('.', 1)[1]
-        if ext == "png" or ext == "PNG":
-            return True
-        return False

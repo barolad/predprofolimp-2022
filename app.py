@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from flask import Flask, render_template, request, session, url_for, flash, redirect, abort, g
+from flask import Flask, render_template, request, session, url_for, flash, redirect, abort, g, make_response
 from DataBaseAPI import DataBaseAPI
 from flask_login import LoginManager, login_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -54,6 +54,7 @@ def login():
 
 
 @app.route("/add_payment", methods=["POST", "GET"])
+@login_required
 def addPayment():
     if request.method == "POST":
         if len(request.form['time']) > 0 and len(request.form['time']) > 0:
@@ -69,9 +70,22 @@ def addPayment():
     return render_template('add_payment.html')
 
 
-@app.route("/profile")
+@app.route("/profile", methods=['POST', 'GET'])
+@login_required
 def profile():
-    return render_template('contact.html')
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and verifyExt(file.filename):
+            try:
+                res = dbase.updateUserAvatar(file.read(), current_user.get_id())
+                if not res:
+                    flash("Ошибка обновления аватара", "error")
+                flash("Аватар обновлен", "success")
+            except FileNotFoundError as e:
+                flash("Ошибка чтения файла", "error")
+        else:
+            flash("Ошибка обновления аватара", "error")
+    return render_template('profile.html')
 
 
 @app.route('/registration', methods=['POST', 'GET'])
@@ -104,22 +118,32 @@ def contact():
 
 
 @app.route('/history', methods=['POST', 'GET'])
+@login_required
 def history():
     dbase.getData(int(current_user.get_id()))
-    return render_template('history2.html', list=dbase.getData(
-        current_user.get_id()))  # list=[{"amount":100,"category":"test","description":"test2"}])
+    return render_template('history2.html', list=dbase.getData(current_user.get_id()))
 
 
-@app.route('/test', methods=['POST', 'GET'])
-def test():
-    if request.method == 'POST':
-        pass
-    return render_template('test.html')
+@app.route('/avatar')
+def avatar():
+    img = current_user.getAvatar(app)
+    if not img:
+        return ""
+    h = make_response(img)
+    h.headers['Content-Type'] = "image/jpg"
+    return h
 
 
 @app.errorhandler(404)
 def pageNotFount(error):
     return render_template('page404.html'), 404
+
+
+def verifyExt(filename):
+    ext = filename.rsplit('.', 1)[1]
+    if ext == "jpg" or ext == "JPG":
+        return True
+    return False
 
 
 if __name__ == '__main__':
