@@ -1,6 +1,8 @@
 from flask_login import UserMixin
 from flask import url_for
+from flask import Flask, render_template, request, session, url_for, flash, redirect, abort, g, make_response
 
+app = Flask(__name__)
 
 class UserLogin(UserMixin):
     def fromDB(self, user_id, db):
@@ -16,6 +18,9 @@ class UserLogin(UserMixin):
 
     def getName(self):
         return self.__user['username'] if self.__user else "Без имени"
+    
+    def getFirstName(self):
+        return self.__user['firstname'] if self.__user else "Ингиборга"
 
     def getEmail(self):
         return self.__user['email'] if self.__user else "Без email"
@@ -32,4 +37,3 @@ class UserLogin(UserMixin):
             img = self.__user['avatar']
 
         return img
-
