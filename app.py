@@ -121,8 +121,19 @@ def contact():
 @login_required
 def history():
     dbase.getData(int(current_user.get_id()))
-    return render_template('history2.html', list=dbase.getData(current_user.get_id()))
+    return render_template('history.html', list=dbase.getData(current_user.get_id()))
 
+@app.route('/statistics', methods=['POST', 'GET'])
+@login_required
+def statistics():
+    dbase.getData(int(current_user.get_id()))
+    return render_template('statistics.html', list=dbase.getData(current_user.get_id()))
+
+@app.route('/tuning', methods=['POST', 'GET'])
+@login_required
+def tuning():
+    dbase.getData(int(current_user.get_id()))
+    return render_template('tuning.html', list=dbase.getData(current_user.get_id()))
 
 @app.route('/avatar')
 def avatar():
