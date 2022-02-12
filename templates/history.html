@@ -140,19 +140,19 @@
         </table>
 
         <!-- Нижнее меню -->
-        <div class="container fixed-bottom bottom-menu">
-            <div class="row mx-1">
-                <div class="col-12  d-flex flex-row justify-content-between">
-                    <a href="#" style="color:inherit"><i class="py-3 fa fa-user" aria-hidden="true"></i></a>
-                    <a href="#" style="color:inherit"><i class="py-3 fa fa-chart-line" aria-hidden="true"></i></a>
-                    <div style="color:#f9f9f9; top: -15px !important;" class="menu-button d-flex justify-content-center align-items-center position-relative">
-                        <a href="{{url_for('addPayment')}}" style="color:#f9f9f9"><i class="py-3 fa fa-plus" aria-hidden="true"> </i> </a>
-                    </div>
-                    <a href="#" style="color:inherit"><i class="py-3 fa fa-history" aria-hidden="true"></i></a>
-                    <a href="#" style="color:inherit"><i class="py-3 fa fa-cog" aria-hidden="true"></i></a>
-                </div>
+    <div class="container fixed-bottom bottom-menu">
+        <div class="row mx-1">
+            <div class="col-12  d-flex flex-row justify-content-between">
+                <a href="{{url_for('profile')}}" style="color:inherit; text-decoration:none"><i class="py-3 fa fa-user" aria-hidden="true"></i></a>
+                <a href="{{url_for('statistics')}}" style="color:inherit; text-decoration:none"><i class="py-3 fa fa-chart-line" aria-hidden="true"></i></a>
+                <a href="{{url_for('addPayment')}}" style="color:#f9f9f9; text-decoration:none"><div style="color:#f9f9f9; top: -15px !important;" class="menu-button d-flex justify-content-center align-items-center position-relative">
+                    <i class="py-3 fa fa-plus" aria-hidden="true"> </i> 
+                </div></a>
+                <a href="{{url_for('history')}}" style="color:inherit; text-decoration:none"><i class="py-3 fa fa-history" aria-hidden="true"></i></a>
+                <a href="{{url_for('tuning')}}" style="color:inherit; text-decoration:none"><i class="py-3 fa fa-cog" aria-hidden="true"></i></a>
             </div>
         </div>
+    </div>
         </div>
     </div>
 </body>
