@@ -32,7 +32,7 @@ def load_user(user_id):
 @login_required
 def index():
     print(url_for('index'))
-    return render_template('index.html')
+    return render_template('index.html', title='WEBUDGET')
 
 
 @app.route("/login", methods=["POST", "GET"])
@@ -50,16 +50,16 @@ def login():
 
         flash("Неверная пара логин/пароль", category='alert alert-danger')
 
-    return render_template('login.html')
+    return render_template('login.html', title='Вход в приложение')
 
 
-@app.route("/add_payment", methods=["POST", "GET"])
+@app.route("/add_paymentminus", methods=["POST", "GET"])
 @login_required
-def addPayment():
+def addPaymentminus():
     if request.method == "POST":
         if len(request.form['time']) > 0 and len(request.form['time']) > 0:
             res = dbase.addPost(current_user.get_id(), request.form['sum'], request.form['category'],
-                                request.form['date'],
+                                False, request.form['date'],
                                 request.form['time'], request.form['message'])
             if not res:
                 flash('Ошибка добавления статьи', category='error')
@@ -67,7 +67,24 @@ def addPayment():
                 flash('Статья добавлена успешно', category='success')
         else:
             flash('Неверно заполнены поля даты и времени', category='error')
-    return render_template('add_payment.html')
+    return render_template('add_paymentminus.html', title='Добавление расходов')
+
+
+@app.route("/add_paymentplus", methods=["POST", "GET"])
+@login_required
+def addPaymentplus():
+    if request.method == "POST":
+        if len(request.form['time']) > 0 and len(request.form['time']) > 0:
+            res = dbase.addPost(current_user.get_id(), request.form['sum'], "salary",
+                                True, request.form['date'],
+                                request.form['time'], request.form['message'])
+            if not res:
+                flash('Ошибка добавления статьи', category='error')
+            else:
+                flash('Статья добавлена успешно', category='success')
+        else:
+            flash('Неверно заполнены поля даты и времени', category='error')
+    return render_template('add_paymentplus.html', title='Добавление доходов')
 
 
 @app.route("/profile", methods=['POST', 'GET'])
@@ -79,13 +96,13 @@ def profile():
             try:
                 res = dbase.updateUserAvatar(file.read(), current_user.get_id())
                 if not res:
-                    flash("Ошибка обновления аватара", "error")
-                flash("Аватар обновлен", "success")
+                    flash("Ошибка обновления аватара", "alert alert-danger")
+                flash("Аватар обновлен", "alert alert-success")
             except FileNotFoundError as e:
-                flash("Ошибка чтения файла", "error")
+                flash("Ошибка чтения файла", "alert alert-danger")
         else:
-            flash("Ошибка обновления аватара", "error")
-    return render_template('profile.html')
+            flash("Ошибка обновления аватара", "alert alert-danger")
+    return render_template('profile.html', title='Профиль пользователя')
 
 
 @app.route('/registration', methods=['POST', 'GET'])
@@ -102,7 +119,7 @@ def registration():
                 flash('Ошибка при добавлении в базу данных.', category='alert alert-danger')
         else:
             flash('Неверно заполнены поля.', category='alert alert-danger')
-    return render_template('registration.html')
+    return render_template('registration.html', title='Регистрация')
 
 
 @app.route('/contact', methods=['POST', 'GET'])
@@ -114,14 +131,21 @@ def contact():
         else:
             flash('Ошибка! Обращение не отправлено ', category='alert alert-danger')
 
-    return render_template('contact.html')
+    return render_template('contact.html', title='Обратная связь')
 
 
 @app.route('/history', methods=['POST', 'GET'])
 @login_required
 def history():
     dbase.getData(int(current_user.get_id()))
-    return render_template('history2.html', list=dbase.getData(current_user.get_id()))
+    return render_template('history.html', title='История операций', list=dbase.getData(current_user.get_id()))
+
+
+@app.route('/statistics', methods=['POST', 'GET'])
+@login_required
+def statistics():
+    dbase.getData(int(current_user.get_id()))
+    return render_template('statistics.html', title='Статистика', list=dbase.getData(current_user.get_id()))
 
 
 @app.route('/avatar')
@@ -132,6 +156,13 @@ def avatar():
     h = make_response(img)
     h.headers['Content-Type'] = "image/jpg"
     return h
+
+
+@app.route('/test', methods=['POST', 'GET'])
+@login_required
+def test():
+    dbase.getData(int(current_user.get_id()))
+    return render_template('test.html', title='TEST', list=dbase.getData(current_user.get_id()))
 
 
 @app.errorhandler(404)
