@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="{{url_for('static', filename='css/all.css')}}">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<title>{{title}}</title>
+  <style>
+    body{
+            background-color: #f9f9f9;
+        }
+    .bottom-menu{
+        background-color: #f9f9f9;
+        color: #777777;
+        border-top: 1px solid #a9a9a9;
+    }
+    .menu-button{
+        background-color: #4a8ef1;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
+    .searchbar{
+        width: 100%;
+    }
+		.profile_table ul li{
+			background-color: #f9f9f9;
+		}
+		.btn-sm, .btn-sm:hover{
+          background: hsla(0, 0%, 98%, 0) !important;
+          color: #777777 !important;
+          outline: 0 !important;
+          border: hsla(0, 0%, 98%, 0) !important;
+          height: 1px; 
+          box-shadow: none !important; 
+        }
+		.dropdown-menu {
+        transform: translate(-50%, -62px) !important;
+        left: 50% !important;
+        text-align: center;
+        }
+  </style>
+</head>
+<body>
+  {% block content -%}
+<!-- Нижнее меню -->
+<div class="container fixed-bottom bottom-menu">
+	<div class="row mx-1">
+		<div class="col-12  d-flex flex-row justify-content-between">
+			<a href="{{url_for('profile')}}" style="color:inherit; text-decoration:none"><i class="py-3 fa fa-user" aria-hidden="true"></i></a>
+			<a href="{{url_for('statistics')}}" style="color:inherit; text-decoration:none"><i class="py-3 fa fa-chart-line" aria-hidden="true"></i></a>
+			<div class="btn-group dropup">
+				<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+					<a href="" style="color:#f9f9f9; text-decoration:none"><div style="color:#f9f9f9; top: -15px !important;" class="menu-button d-flex justify-content-center align-items-center position-relative">
+						<i class="py-3 fa fa-plus" aria-hidden="true" style="font-size: 18px; position: absolute; top: -0px !important;"> </i> 
+					</div></a></button>
+				<ul class="dropdown-menu">
+				  <li><a class="dropdown-item" href="{{url_for('addPaymentplus')}}">Поступление</a></li>
+				  <div class="dropdown-divider"></div>
+				  <li><a class="dropdown-item" href="{{url_for('addPaymentminus')}}">Расход</a></li>
+				</ul>
+			  </div>
+			<a href="{{url_for('history')}}" style="color:inherit; text-decoration:none"><i class="py-3 fa fa-history" aria-hidden="true"></i></a>
+			<a data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" style="color:inherit; text-decoration:none"><i class="py-3 fa fa-cog" aria-hidden="true"></i></a>
+		</div>
+	</div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h4 id="offcanvasRightLabel mt-1">Настройки</h4>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="input-group rounded" style='margin-top: -15px !important'>
+      <input style="border-radius: 10px!important; height: 30px; background-color: #D2D6DC; border: none; color: #9b9b9b;" type="search" class="form-control rounded" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon" />
+      <span style="background-color: #d2d6dc; color: #777777;" class="input-group-text border-0" id="search-addon"><i class="fa fa-search"></i></span>
+    </div>
+    <div class="list-group mt-3" style="margin-left: -1.1em;" id="list-tab" role="tablist">
+		<a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">Сменить аватар</a>
+		<a href="#" class="list-group-item list-group-item-action ">A second link item</a>
+		<a href="{{url_for('contact')}}" class="list-group-item list-group-item-action">Обратная связь</a>
+	  </div>
+	  <div class="tab-content" id="nav-tabContent">
+		<div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+			<form action="{{url_for('profile')}}" method="POST" enctype="multipart/form-data">
+				<div class="container px-4 mt-3">
+					<div class="row gx-5">		
+					  <div class="col">
+						<input  id='file_button' type="file" name="file" hidden/>
+						<label style="width: 100%;"   class='btn btn-outline-primary' for="file_button">Выбрать</label>
+					  </div>
+					  <div class="col">
+						<input style="width: 100%;" class='btn btn-outline-primary' type="submit" value="Загрузить"> 
+					  </div>
+					</form>
+					</div>
+				</div>
+		</div>
+	  </div>
+  </div>
+</div>
+  {% endblock -%}
+</body>
+</html>

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+{{ super() }}
+<section class="addpay">
+  <div class="container mt-3">
+      <h2 class="text-center mb-3">Новая запись</h2>
+      <!-- <p>Если у вас возникли проблемы, напишите в поддержку через форму обратной связи ниже.</p> -->
+      
+      {% for cat,msg in get_flashed_messages(True) %}
+      <div class="{{cat}}" role="alert">
+          {{msg}}
+      </div>
+      {% endfor %}
+
+      <form action='/add_paymentminus' method='post' class="row g-2 needs-validation" novalidate>
+        <!-- <div class="col-12">
+          <label for="validationCustom01" class="form-label">Введите логин</label>
+          <input type="text" class="form-control" name='username' id="validationCustom01" placeholder="Example" required>
+        </div> -->
+        <div class="col-12">
+          <label for="validationCustom01" class="form-label">Сумма</label>
+          <div class="input-group">
+            <div class="input-group-text">Руб</div>
+            <input type="number" name='sum' min="0.00" step="0.50" value="1.00" id="exampleInputAmount" class="form-control" placeholder="100,00">
+        </div>
+        </div>
+        <div class="col-12">
+          <label for="exampleFormControlInput1" class="form-label">Категория</label>
+          <div class="input-group">
+            <div class="input-group-text"><span class="material-icons">category</span></div>
+            <select id="inputState" class="form-control" name='category'>
+              <option value="food"> Супермаркеты</option>
+              <option value="study">Образование</option>
+              <option value="cinema">Кино</option>
+              <option value="transfer">Переводы</option>
+              <option value="another">Другое</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-6">
+          <label for="exampleFormControlInput1" class="form-label">Дата</label>
+          <div class="input-group">
+            <input type="date" class="form-control" id="date" name="date" placeholder="Дата" required>
+          </div>
+        </div>
+        <div class="col-6">
+          <label for="exampleFormControlInput1" class="form-label">Время</label>
+          <div class="input-group">
+            <input type="time" class="form-control" id="time" name="time" placeholder="Дата" required>
+          </div>
+        </div>
+        <div class="col-12">
+          <label for="validationCustom03" class="form-label">Описание</label>
+          <textarea class='form-control' name="message" id="" rows=1%></textarea>
+        </div>
+        <div class="d-grid gap-2 d-md-block">
+          <button class="btn btn-primary mt-3" type="submit" style="height: 66px;">Добавить</button>
+        </div>
+      </form>
+  </div>
+</section>
+{% endblock %}
