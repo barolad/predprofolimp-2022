@@ -1,20 +1,43 @@
-{% for cat, msg in get_flashed_messages(True) %}
-<div class="flash {{cat}}">{{msg}}</div>
-{% endfor %}
-<table border="0" class="profile-table">
-	<tr><td valign="top">
-		<div class="profile-ava"><img src="{{ url_for('avatar') }}"></div>
-		<div class="profile-load">
-		<form action="{{url_for('profile')}}" method="POST" enctype="multipart/form-data">
-			<p><input type="file" name="file">
-			<p><input type="submit" value="Загрузить">
-		</form>
+<style>
+		svg{
+			width: 1.3em;
+			height: auto;
+		}
+	</style>
+</head>
+{% extends 'base.html' %}
+{% block content %}
+{{ super() }}
+<div class="container mt-2">
+	{% for cat,msg in get_flashed_messages(True) %}
+	<div class="{{cat}}" role="alert">
+		{{msg}}
+	</div>
+	{% endfor %}
+	
+	<div class="d-flex flex-column align-items-center text-center mt-4">
+		<img src="{{url_for('avatar')}}" class="rounded-circle p-1 bg-primary" width="110">
+		<div class="mt-2">
+			<h4>{{ current_user.getName() }}</h4>
+			
 		</div>
-	</td>
-	<td valign="top" class="profile-panel">
-		<ul class="profile-info">
-		<li>Имя: {{ current_user.getName() }}</li>
-		<li>Email: {{ current_user.getEmail() }}</li>
+		
+	</div>
+	<div class="profile_table">
+		<ul class="list-group list-group-flush mt-3">
+			<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+				<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>&ensp;Логин</h6>
+				<span class="text-secondary">{{ current_user.getName() }}</span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+				<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>&ensp;Имя</h6>
+				<span class="text-secondary">{{ current_user.getFirstName() }}</span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+				<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-fill" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/></svg>&ensp;Email</h6>
+				<span class="text-secondary">{{ current_user.getEmail() }}</span>
+			</li>
 		</ul>
-	</td></tr>
-</table>
+	</div>
+</div>
+{% endblock %}
