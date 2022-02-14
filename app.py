@@ -154,6 +154,31 @@ def history():
 
             d["img"] = getIcon(raw.category)
             d["datetime"] = datetime.datetime.combine(raw.date, raw.time).strftime("%d.%m.%Y %H:%M")
+            month = datetime.datetime.combine(raw.date, raw.time).strftime("%m")
+            if month == '01':
+                d["month"] = "января"
+            elif month == '02':
+                d["month"] = "февраля"
+            elif month == '03':
+                d["month"] = "марта"
+            elif month == '04':
+                d["month"] = "апреля"
+            elif month == '05':
+                d["month"] = "мая"
+            elif month == '06':
+                d["month"] = "июня"
+            elif month == '07':
+                d["month"] = "июля"
+            elif month == '08':
+                d["month"] = "августа"
+            elif month == '09':
+                d["month"] = "сентября"
+            elif month == '10':
+                d["month"] = "октября"
+            elif month == '11':
+                d["month"] = "ноября"
+            elif month == '12':
+                d["month"] = "декабря"
             if raw.type:
                 d["type"] = "plusmon"
             else:
@@ -163,7 +188,7 @@ def history():
             else:
                 d["amount"] = "-" + str(raw.amount) + "₽"
             data.append(d)
-    return render_template('history.html', title='История операций', list=data)  # dbase.getData(current_user.get_id()))
+    return render_template('history.html', title='История операций', list=data[::-1])  # dbase.getData(current_user.get_id()))
 
 
 @app.route('/statistics', methods=['POST', 'GET'])
@@ -204,16 +229,18 @@ def verifyExt(filename):
 
 def getIcon(category):
     if category == "food":
-        return "fa-shopping-cart"
+        return "shopping_cart"
     if category == "study":
-        return "fa-book"
+        return "local_library"
     if category == "cinema":
-        return "fa-caret-square-o-right"
+        return "movie"
+    if category == "transport":
+        return "directions_bus"
     if category == "transfer":
-        return "fa-credit-card"
+        return "transfer_within_a_station"
     if category == "salary":
-        return "fa-bank"
-    return "fa-bank"
+        return "payment"
+    return "payment"
 
 
 if __name__ == '__main__':
