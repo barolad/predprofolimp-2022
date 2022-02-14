@@ -10,6 +10,9 @@
         .accordion-button{
             font-size: small !important;
         }
+        .hist_table_th{
+          width: 40px;
+        }
 </style>
 
 {% extends 'base.html' %}
@@ -30,19 +33,9 @@
               <input type="date" class="form-control" id="date_to" name="date_to" placeholder="Дата" required>
             </div>
         </div>
-        <div class="col-12">
+        <div class="col-12 mt-2 ">
             <button class="btn btn-primary mt-1" type="submit" style="width: 100%;">Найти</button>
         </div>
-        <!--label for="exampleFormControlInput1" class="form-label mt-1">Или выберите период</--label>
-        <div class="col-4">
-            <input type="button" class="btn btn-outline-dark" style=" width: 100%; background-color: white; border-color: #ccc;" value='3 месяца' clavalue="">
-        </div>
-        <div class="col-4">
-            <input type="button" class="btn btn-outline-dark" style="width: 100%; background-color: white; border-color: #ccc;" value='6 месяцев' clavalue="">
-        </div>
-        <div class="col-4">
-            <input type="button" class="btn btn-outline-dark" style="width: 100%;   background-color: white; border-color: #ccc;" value='1 год' clavalue="">
-        </div-->
     </form>
     <!-- <div class="accordion mt-2 " id="accordionExample">
         <div class="accordion-item">
@@ -59,18 +52,29 @@
         </div>
       </div> -->
     <div class="tablesmon mt-2">
-        <table class="table">
+        <!-- <table class="table">
             <tbody>
             {%for u in list:%}
             <tr>
-                <th scope="row"><i class="fa {{u['img']}}" aria-hidden="true"></i></th>
+                <th scope="row"><span class="material-icons">{{u['img']}}</span></th>
                 <td>{{u['datetime']}}</td>
                 <td class="{{u['type']}}">{{u['amount']}}</td>
             </tr>
             {%endfor%}
             </tbody>
-        </table>
-
+        </table> -->
+        {%for u in list:%}
+          <table class="table ">
+            <h6>{{u['datetime'][:2]}} {{u['month']}}</h6>
+            <tbody>
+            <tr>
+                <th class='hist_table_th' scope="col"><span class="material-icons">{{u['img']}}</span></th>
+                <td>{{u['datetime']}}</td>
+                <td class="{{u['type']}}">{{u['amount']}}</td>
+            </tr>  
+            </tbody>
+        </table> 
+      {%endfor%} 
     </div>
 </div>
 {% endblock %}
