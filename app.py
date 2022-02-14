@@ -1,5 +1,4 @@
-import sqlite3
-import os
+import datetime
 from flask import Flask, render_template, request, session, url_for, flash, redirect, abort, g, make_response
 from DataBaseAPI import DataBaseAPI
 from flask_login import LoginManager, login_user, login_required, current_user
@@ -137,8 +136,34 @@ def contact():
 @app.route('/history', methods=['POST', 'GET'])
 @login_required
 def history():
-    dbase.getData(int(current_user.get_id()))
-    return render_template('history.html', title='История операций', list=dbase.getData(current_user.get_id()))
+    date_from = ""
+    date_to = ""
+    try:
+        date_from = request.args["date_from"]
+    except:
+        date_from = "0001-01-01"
+    try:
+        date_to = request.args["date_to"]
+    except:
+        date_to = "9000-01-01"
+    raw_data = dbase.getDataBetween(int(current_user.get_id()), date_from, date_to)
+    data = []
+    if raw_data:
+        for raw in raw_data:
+            d = {}
+
+            d["img"] = getIcon(raw.category)
+            d["datetime"] = datetime.datetime.combine(raw.date, raw.time).strftime("%d.%m.%Y %H:%M")
+            if raw.type:
+                d["type"] = "plusmon"
+            else:
+                d["type"] = "minusmon"
+            if raw.type:
+                d["amount"] = "+" + str(raw.amount) + "₽"
+            else:
+                d["amount"] = "-" + str(raw.amount) + "₽"
+            data.append(d)
+    return render_template('history.html', title='История операций', list=data)  # dbase.getData(current_user.get_id()))
 
 
 @app.route('/statistics', methods=['POST', 'GET'])
@@ -175,6 +200,20 @@ def verifyExt(filename):
     if ext == "jpg" or ext == "JPG":
         return True
     return False
+
+
+def getIcon(category):
+    if category == "food":
+        return "fa-shopping-cart"
+    if category == "study":
+        return "fa-book"
+    if category == "cinema":
+        return "fa-caret-square-o-right"
+    if category == "transfer":
+        return "fa-credit-card"
+    if category == "salary":
+        return "fa-bank"
+    return "fa-bank"
 
 
 if __name__ == '__main__':

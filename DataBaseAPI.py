@@ -179,7 +179,7 @@ class DataBaseAPI:
         try:
             select_query = select([self.__user_data_table]).where(
                 self.__user_data_table.c.user_id == user_id
-            )
+            ).order_by(self.__user_data_table.c.date.asc())
             select_result = self.__connection.execute(select_query)
             if select_result is None:
                 flash("Пользователь не найден", category='alert alert-danger')
@@ -199,7 +199,7 @@ class DataBaseAPI:
                 self.__user_data_table.c.user_id == user_id
             ).where(
                 between(self.__user_data_table.c.date,date_from_p,date_to_p)
-            )
+            ).order_by(self.__user_data_table.c.date.asc())
             select_result = self.__connection.execute(select_query)
             if select_result is None:
                 flash("Пользователь не найден", category='alert alert-danger')

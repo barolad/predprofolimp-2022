@@ -21,19 +21,19 @@
         <div class="col-6">
             <label for="exampleFormControlInput1" class="form-label">От</label>
             <div class="input-group">
-              <input type="date" class="form-control" id="date" name="date" placeholder="Дата" required>
+              <input type="date" class="form-control" id="date_from" name="date_from" placeholder="Дата" required>
             </div>
         </div>
         <div class="col-6">
             <label for="exampleFormControlInput1" class="form-label">До</label> 
             <div class="input-group">
-              <input type="date" class="form-control" id="date" name="date" placeholder="Дата" required>
+              <input type="date" class="form-control" id="date_to" name="date_to" placeholder="Дата" required>
             </div>
         </div>
         <div class="col-12">
             <button class="btn btn-primary mt-1" type="submit" style="width: 100%;">Найти</button>
         </div>
-        <label for="exampleFormControlInput1" class="form-label mt-1">Или выберите период</label>
+        <!--label for="exampleFormControlInput1" class="form-label mt-1">Или выберите период</--label>
         <div class="col-4">
             <input type="button" class="btn btn-outline-dark" style=" width: 100%; background-color: white; border-color: #ccc;" value='3 месяца' clavalue="">
         </div>
@@ -42,7 +42,7 @@
         </div>
         <div class="col-4">
             <input type="button" class="btn btn-outline-dark" style="width: 100%;   background-color: white; border-color: #ccc;" value='1 год' clavalue="">
-        </div>
+        </div-->
     </form>
     <!-- <div class="accordion mt-2 " id="accordionExample">
         <div class="accordion-item">
@@ -59,66 +59,17 @@
         </div>
       </div> -->
     <div class="tablesmon mt-2">
-        <!--h6>10 февраля</--h6-->
         <table class="table">
-            <!-- <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-            </tr>
-            </thead> -->
             <tbody>
+            {%for u in list:%}
             <tr>
-                <th scope="row"><i class="fa fa-shopping-cart" aria-hidden="true"></i></th>
-                <td>10.02.2022 0:14</td>
-                <td class="minusmon">-100₽</td>
+                <th scope="row"><i class="fa {{u['img']}}" aria-hidden="true"></i></th>
+                <td>{{u['datetime']}}</td>
+                <td class="{{u['type']}}">{{u['amount']}}</td>
             </tr>
-            <tr>
-                <th scope="row"><i class="fa fa-car" aria-hidden="true"></i></th>
-                <td>10.02.2022 0:14</td>
-                <td class="plusmon">+10 000₽</td>
-            </tr>
-            <tr>
-                <th scope="row"><i class="fa fa-credit-card" aria-hidden="true"></i></th>
-                <td>10.02.2022 0:14</td>
-                <td class="minusmon">-1 000₽</td>
-            </tr>
+            {%endfor%}
             </tbody>
         </table>
-
-        <!--h6>11 февраля</h6>
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <th scope="row"><i class="fa fa-car" aria-hidden="true"></i></th>
-                <td>10.02.2022 0:14</td>
-                <td class="minusmon">-100₽</td>
-            </tr>
-            <tr>
-                <th scope="row"><i class="fa fa-car" aria-hidden="true"></i></th>
-                <td>10.02.2022 0:14</td>
-                <td class="minusmon">-10 000₽</td>
-            </tr>
-            <tr>
-                <th scope="row"><i class="fa fa-credit-card" aria-hidden="true"></i></th>
-                <td>10.02.2022 0:14</td>
-                <td class="minusmon">-10₽</td>
-            </tr>
-            </tbody>
-            shopping-cart
-            book
-            caret-square-o-right
-        </table -->
 
     </div>
 </div>
