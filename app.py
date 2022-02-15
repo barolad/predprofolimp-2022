@@ -1,7 +1,7 @@
 import datetime
 from flask import Flask, render_template, request, session, url_for, flash, redirect, abort, g, make_response
 from DataBaseAPI import DataBaseAPI
-from flask_login import LoginManager, login_user, login_required, current_user
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from UserLogin import UserLogin
 
@@ -219,6 +219,14 @@ def avatar():
 def test():
     dbase.getData(int(current_user.get_id()))
     return render_template('test.html', title='TEST', list=dbase.getData(current_user.get_id()))
+
+
+@app.route('/logout/')
+@login_required
+def logout():
+    logout_user()
+    flash("Вы успешно вышли из аккаунта!", category='alert alert-success')
+    return redirect(url_for('login'))
 
 
 @app.errorhandler(404)
