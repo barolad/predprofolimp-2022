@@ -56,16 +56,16 @@ def login():
 @login_required
 def addPaymentminus():
     if request.method == "POST":
-        if len(request.form['time']) > 0 and len(request.form['time']) > 0:
+        if len(request.form['time']) > 0 and len(request.form['time']) > 0 and len(request.form['message']) <= 15:
             res = dbase.addPost(current_user.get_id(), request.form['sum'], request.form['category'],
                                 False, request.form['date'],
                                 request.form['time'], request.form['message'])
             if not res:
-                flash('Ошибка добавления статьи', category='error')
+                flash('Ошибка добавления статьи', category='alert alert-danger')
             else:
-                flash('Статья добавлена успешно', category='success')
+                flash('Статья добавлена успешно', category='alert alert-success')
         else:
-            flash('Неверно заполнены поля даты и времени', category='error')
+            flash('Неверно заполнены поля даты и времени', category='alert alert-danger')
     return render_template('add_paymentminus.html', title='Добавление расходов')
 
 
@@ -73,16 +73,16 @@ def addPaymentminus():
 @login_required
 def addPaymentplus():
     if request.method == "POST":
-        if len(request.form['time']) > 0 and len(request.form['time']) > 0:
-            res = dbase.addPost(current_user.get_id(), request.form['sum'], "salary",
+        if len(request.form['time']) > 0 and len(request.form['time']) > 0 and len(request.form['message']) <= 15:
+            res = dbase.addPost(current_user.get_id(), request.form['sum'], request.form['category'],
                                 True, request.form['date'],
                                 request.form['time'], request.form['message'])
             if not res:
-                flash('Ошибка добавления статьи', category='error')
+                flash('Ошибка добавления статьи', category='alert alert-danger')
             else:
-                flash('Статья добавлена успешно', category='success')
+                flash('Статья добавлена успешно', category='alert alert-success')
         else:
-            flash('Неверно заполнены поля даты и времени', category='error')
+            flash('Неверно заполнены поля даты и времени', category='alert alert-danger')
     return render_template('add_paymentplus.html', title='Добавление доходов')
 
 
@@ -138,6 +138,8 @@ def contact():
 def history():
     date_from = ""
     date_to = ""
+    lenlist = 0
+    currentyyear=''
     try:
         date_from = request.args["date_from"]
     except:
@@ -148,11 +150,12 @@ def history():
         date_to = "9000-01-01"
     raw_data = dbase.getDataBetween(int(current_user.get_id()), date_from, date_to)
     data = []
+
     if raw_data:
         for raw in raw_data:
             d = {}
-
             d["img"] = getIcon(raw.category)
+            d["description"] = raw.description
             d["datetime"] = datetime.datetime.combine(raw.date, raw.time).strftime("%d.%m.%Y %H:%M")
             month = datetime.datetime.combine(raw.date, raw.time).strftime("%m")
             if month == '01':
@@ -188,7 +191,10 @@ def history():
             else:
                 d["amount"] = "-" + str(raw.amount) + "₽"
             data.append(d)
-    return render_template('history.html', title='История операций', list=data[::-1])  # dbase.getData(current_user.get_id()))
+            lenlist = len(data)
+            date = datetime.date.today()
+            currentyyear = date.strftime("%Y")
+    return render_template('history.html', title='История операций', list=data[::-1], lenlist=lenlist, currentyear=currentyyear)
 
 
 @app.route('/statistics', methods=['POST', 'GET'])
@@ -228,17 +234,29 @@ def verifyExt(filename):
 
 
 def getIcon(category):
-    if category == "food":
-        return "shopping_cart"
-    if category == "study":
-        return "local_library"
-    if category == "cinema":
-        return "movie"
-    if category == "transport":
-        return "directions_bus"
-    if category == "transfer":
-        return "transfer_within_a_station"
-    if category == "salary":
+    if category == "m1":
+        return "restaurant"
+    if category == "m2":
+        return "handyman"
+    if category == "m3":
+        return "cable"
+    if category == "m4":
+        return "brush"
+    if category == "m5":
+        return "checkroom"
+    if category == "m6":
+        return "local_florist"
+    if category == "m7":
+        return "menu_book"
+    if category == "m8":
+        return "directions_car"
+    if category == "m9":
+        return "self_improvement"
+    if category == "m10":
+        return "local_cafe"
+    if category == "m11":
+        return "photo_size_select_actual"
+    if category == "m12":
         return "payment"
     return "payment"
 
