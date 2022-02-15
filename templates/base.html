@@ -7,80 +7,46 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="{{url_for('static', filename='css/all.css')}}">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet">
+	<link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon">
 	<title>{{title}}</title>
-  <style>
-    body{
-            background-color: #f9f9f9;
-        }
-    .bottom-menu{
-        background-color: #f9f9f9;
-        color: #777777;
-        border-top: 1px solid #a9a9a9;
-    }
-    .menu-button{
-        background-color: #4a8ef1;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-    }
-    .searchbar{
-        width: 100%;
-    }
-	.profile_table ul li{
+	<style>
+	body{
 		background-color: #f9f9f9;
+		/* background-image: url(../static/bg-pattern.svg); */
+	}
+	.bottom-menu{
+	background-color: #f9f9f9;
+	color: #777777;
+	border-top: 1px solid #a9a9a9;
+	}
+	.menu-button{
+	background-color: #4a8ef1;
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	}
+	.searchbar{
+	width: 100%;
+	}
+	.profile_table ul li{
+	background-color: #f9f9f9;
 	}
 	.btn-sm, .btn-sm:hover{
-		background: hsla(0, 0%, 98%, 0) !important;
-		color: #777777 !important;
-		outline: 0 !important;
-		border: hsla(0, 0%, 98%, 0) !important;
-		height: 1px; 
-		box-shadow: none !important; 
+	background: hsla(0, 0%, 98%, 0) !important;
+	color: #777777 !important;
+	outline: 0 !important;
+	border: hsla(0, 0%, 98%, 0) !important;
+	height: 1px; 
+	box-shadow: none !important; 
 	}
 	.dropdown-menu {
 	transform: translate(-50%, -62px) !important;
 	left: 50% !important;
 	text-align: center;
 	}
-	@font-face {
-	font-family: 'Material Icons';
-	font-style: normal;
-	font-weight: 400;
-	src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
-	src: local('Material Icons'),
-	local('MaterialIcons-Regular'),
-	url(https://example.com/MaterialIcons-Regular.woff2) format('woff2'),
-	url(https://example.com/MaterialIcons-Regular.woff) format('woff'),
-	url(https://example.com/MaterialIcons-Regular.ttf) format('truetype');
-	}
-	.material-icons {
-	font-family: 'Material Icons';
-	font-weight: normal;
-	font-style: normal;
-	font-size: 24px;  /* Preferred icon size */
-	display: inline-block;
-	line-height: 1;
-	text-transform: none;
-	letter-spacing: normal;
-	word-wrap: normal;
-	white-space: nowrap;
-	direction: ltr;
-
-	/* Support for all WebKit browsers. */
-	-webkit-font-smoothing: antialiased;
-	/* Support for Safari and Chrome. */
-	text-rendering: optimizeLegibility;
-
-	/* Support for Firefox. */
-	-moz-osx-font-smoothing: grayscale;
-
-	/* Support for IE. */
-	font-feature-settings: 'liga';
-	}
-  </style>
+	</style>
 </head>
 <body>
   {% block content -%}
