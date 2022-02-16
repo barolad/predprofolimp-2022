@@ -1,5 +1,126 @@
 {% extends 'base.html' %}
 {% block content %}
 {{ super() }}
-Главная страница
+<style>
+    .balance_box{
+        background-color: #464646;
+        border-radius: 10px;
+        width: auto;
+        height: 70px;
+        width: auto;
+    }
+    .balance_box_1{
+        background-color: #464646;
+        border-radius: 10px;
+        width: auto;
+        height: 150px;
+        width: 48.5%;
+        padding: 10px;
+        color: white;
+    }
+    .balance_box_1>h6{
+        margin-top: -10px;
+    }
+    .balance_box_1>p{
+        line-height: 15px
+    }
+    .balance_box>h5{
+        color: white;
+    }
+    .monm{
+        color: #ff2d50;
+        margin-top: -3px;
+    }
+    .monp{
+        color: #2dff73;
+        margin-top: -3px;
+    }
+    .balance_box>h1{
+        color: white;
+    }
+    .inf{
+        color: white;
+    }
+
+</style>
+<div class="container mt-3">
+    <div class="avatar_and_name row">
+        <div class="col-2"><img src="{{url_for('avatar')}}" class="rounded-circle" style="border: 3px #4a8ef1 solid; border-radius: 50% !important; width: 50px !important; height: 50px !important;"></div>
+        <div class="col"><a style='text-decoration: none !important; color: #464646;' class="" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"><h1 style="margin-top: 5px !important; text-decoration: none !important;">{{ current_user.getFirstName() }}<svg style="margin-left: -10px; color: #4a8ef1;" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+            <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+          </svg></a></div>
+    </div>
+    <div class="balance_box mt-3 d-flex flex-row justify-content-between" style="padding: 10px;">
+        <div class="col-2" style="background-color: #8bb9ff; border: 10px #4a8ef1 solid; border-radius: 50% !important; width: 50px !important; height: 50px !important;"><span class="material-icons-outlined " style="margin-top: 10%; margin-left: 10%; font-weight: bold; color: white;">currency_ruble</span>
+        </div>
+        <h1 style="margin-top: 7px;">10345000.00₽</h1>
+    </div>
+    <div class="d-flex flex-row justify-content-between mt-2" style="margin-left: 0px; margin-right: 0px;">
+        <div class="balance_box_1 col-6">
+            <h5>Доходы</h5>
+            <h6>В {{currentmonth}}</h6>
+            <h5 class="monp">1000 ₽</h5>
+            <p>На 1000 ₽ больше, чем в предыдущем месяце</p>
+        </div>
+        <div class="balance_box_1 col-6">
+            <h5>Расходы</h5>
+            <h6>В {{currentmonth}}</h6>
+            <h5 class="monm">1000 ₽</h5>
+            <p>На 300 ₽ меньше, чем в предыдущем месяце</p>
+        </div>
+    </div>
+    <div class="balance_box mt-2">
+        <h5 class="text-center">Инфляция</h5>
+        <div class="row text-center" style="margin-top: -13px;">
+            <h5 class="inf col-6">{{inf_future}}%</h5>
+            <h5 class="inf col-6">{{inf_now}}%</h5>
+            <p class='col-6' style="margin-top: -11px; color: white;">Цель в России</p>
+            <p class='col-6' style="margin-top: -11px; color: white;">Текущая в России</p>
+        </div>
+        <div class="d-flex flex-row justify-content-between" style="margin-top: -10px;">
+            
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Профиль</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="d-flex flex-column align-items-center text-center mt-4">
+            <img src="{{url_for('avatar')}}" class="rounded-circle p-1 bg-primary" style="border-radius: 55px !important; width: 110px !important; height: 110px !important;">
+            <div class="mt-2">
+                <h4>{{ current_user.getName() }}</h4>
+                
+            </div>
+            
+        </div>
+        <div class="profile_table">
+            <ul class="list-group mt-3">
+                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>&ensp;Логин</h6>
+                    <span class="text-secondary">{{ current_user.getName() }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>&ensp;Имя</h6>
+                    <span class="text-secondary">{{ current_user.getFirstName() }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-fill" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/></svg>&ensp;Email</h6>
+                    <span class="text-secondary">{{ current_user.getEmail() }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+  </div>
 {% endblock %}
