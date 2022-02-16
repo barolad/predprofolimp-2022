@@ -4,6 +4,8 @@ from DataBaseAPI import DataBaseAPI
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from UserLogin import UserLogin
+import requests
+from bs4 import BeautifulSoup as BS
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'isaktimurov'
@@ -27,11 +29,26 @@ def load_user(user_id):
     return UserLogin().fromDB(user_id, dbase)
 
 
-@app.route('/')
+@app.route('/', methods=["POST", "GET"])
 @login_required
 def index():
-    print(url_for('index'))
-    return render_template('index.html', title='WEBUDGET')
+    #Парсинг инфы с сайта центробанка
+    r = requests.get('http://www.cbr.ru/')
+    html = BS(r.content, 'html.parser')
+    O = []
+
+    for el in html.select('.main-indicator'):
+        title = el.select('.main-indicator_value')
+        title = (title[0].text).split('%')
+        title.pop(1)
+        O.append(title)
+    inf_future=str(O[0])[2:-2]
+    inf_now=str(O[1])[2:-2]
+    date = datetime.date.today()
+    month_list=['','январе', 'феврале', 'марте', 'апреле', 'мае', 'июне',
+           'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре']
+    currentmonth = month_list[date.month]
+    return render_template('index.html', title='WEBUDGET', inf_future=inf_future, inf_now=inf_now, currentmonth=currentmonth)
 
 
 @app.route("/login", methods=["POST", "GET"])
