@@ -1,4 +1,6 @@
 import datetime
+import tempfile
+
 from flask import Flask, render_template, request, session, url_for, flash, redirect, abort, g, make_response
 from DataBaseAPI import DataBaseAPI
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
@@ -6,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from UserLogin import UserLogin
 import requests
 from bs4 import BeautifulSoup as BS
+import csv
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'isaktimurov'
@@ -32,7 +35,7 @@ def load_user(user_id):
 @app.route('/', methods=["POST", "GET"])
 @login_required
 def index():
-    #Парсинг инфы с сайта центробанка
+    # Парсинг инфы с сайта центробанка
     r = requests.get('http://www.cbr.ru/')
     html = BS(r.content, 'html.parser')
     O = []
@@ -42,13 +45,14 @@ def index():
         title = (title[0].text).split('%')
         title.pop(1)
         O.append(title)
-    inf_future=str(O[0])[2:-2]
-    inf_now=str(O[1])[2:-2]
+    inf_future = str(O[0])[2:-2]
+    inf_now = str(O[1])[2:-2]
     date = datetime.date.today()
-    month_list=['','январе', 'феврале', 'марте', 'апреле', 'мае', 'июне',
-           'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре']
+    month_list = ['', 'январе', 'феврале', 'марте', 'апреле', 'мае', 'июне',
+                  'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре']
     currentmonth = month_list[date.month]
-    return render_template('index.html', title='WEBUDGET', inf_future=inf_future, inf_now=inf_now, currentmonth=currentmonth)
+    return render_template('index.html', title='WEBUDGET', inf_future=inf_future, inf_now=inf_now,
+                           currentmonth=currentmonth)
 
 
 @app.route("/login", methods=["POST", "GET"])
@@ -73,7 +77,7 @@ def login():
 @login_required
 def addPaymentminus():
     if request.method == "POST":
-        if len(request.form['time']) > 0 and len(request.form['time']) > 0 and len(request.form['message']) <= 15:
+        if len(request.form['time']) > 0 and len(request.form['time']) > 0:
             res = dbase.addPost(current_user.get_id(), request.form['sum'], request.form['category'],
                                 False, request.form['date'],
                                 request.form['time'], request.form['message'])
@@ -90,7 +94,7 @@ def addPaymentminus():
 @login_required
 def addPaymentplus():
     if request.method == "POST":
-        if len(request.form['time']) > 0 and len(request.form['time']) > 0 and len(request.form['message']) <= 15:
+        if len(request.form['time']) > 0 and len(request.form['time']) > 0:
             res = dbase.addPost(current_user.get_id(), request.form['sum'], request.form['category'],
                                 True, request.form['date'],
                                 request.form['time'], request.form['message'])
@@ -155,8 +159,9 @@ def contact():
 def history():
     date_from = ""
     date_to = ""
+    categories = []
     lenlist = 0
-    currentyyear=''
+    currentyyear = ''
     try:
         date_from = request.args["date_from"]
     except:
@@ -165,7 +170,12 @@ def history():
         date_to = request.args["date_to"]
     except:
         date_to = "9000-01-01"
-    raw_data = dbase.getDataBetween(int(current_user.get_id()), date_from, date_to)
+    categories = request.args.getlist("category")
+    if (len(categories) == 0):
+        categories = ["m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8", "m9", "m10", "m11", "m12", "p1", "p2", "p3", "p4",
+                      "p5"]
+
+    raw_data = dbase.getDataBetweenWithCategory(int(current_user.get_id()), date_from, date_to, categories)
     data = []
 
     if raw_data:
@@ -204,14 +214,20 @@ def history():
             else:
                 d["type"] = "minusmon"
             if raw.type:
-                d["amount"] = "+" + str(raw.amount) + "₽"
+                d["amount"] = "+" + str(raw.amount) + "руб."
             else:
-                d["amount"] = "-" + str(raw.amount) + "₽"
+                d["amount"] = "-" + str(raw.amount) + "руб."#₽
             data.append(d)
             lenlist = len(data)
             date = datetime.date.today()
             currentyyear = date.strftime("%Y")
-    return render_template('history.html', title='История операций', list=data[::-1], lenlist=lenlist, currentyear=currentyyear)
+    csvf_name=app.root_path
+    csvf=open(csvf_name+"/static/export_"+current_user.getName()+".csv","w")
+    writer=csv.DictWriter(csvf,fieldnames=["month","type","amount","description","datetime","img"],delimiter=';')
+    writer.writerows(data[::-1])
+    csvf.close()
+    return render_template('history.html', title='История операций', list=data[::-1], lenlist=lenlist,
+                           currentyear=currentyyear)
 
 
 @app.route('/statistics', methods=['POST', 'GET'])
@@ -222,12 +238,24 @@ def statistics():
 
 
 @app.route('/avatar')
+@login_required
 def avatar():
     img = current_user.getAvatar(app)
     if not img:
         return ""
     h = make_response(img)
     h.headers['Content-Type'] = "image/jpg"
+    return h
+
+
+@app.route('/history_export')
+@login_required
+def history_export():
+    img = current_user.getAvatar(app)
+    if not img:
+        return ""
+    h = make_response(img)
+    h.headers['Content-Type'] = "text/csv"
     return h
 
 
@@ -284,6 +312,10 @@ def getIcon(category):
     if category == "m12":
         return "payment"
     return "payment"
+
+
+def getCategoryName(category):
+    pass
 
 
 if __name__ == '__main__':

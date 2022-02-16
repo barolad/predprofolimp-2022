@@ -33,7 +33,12 @@
 {% block content %}
 {{ super() }}
 <div class="container mt-2">
-    <h1>История платежей</h1>
+<div class="d-flex flex-row justify-content-between">
+<h1>История платежей </h1>
+<form action="history_export" method="post">
+<button class="btn btn-outline-secondary" type="submit"><span class="material-icons" style="color: black;" > cloud_download</span></button>
+</form>
+</div>
     <p></p>
     <form action="history" method="get" class="row">
         <div class="col-6">
@@ -48,7 +53,7 @@
               <input type="date" class="form-control" id="date_to" name="date_to" placeholder="Дата" required>
             </div>
         </div>
-      
+
         <div class="col-12 mt-1">
           <div class="input-group">
             <div class="input-group-text"><span class="material-icons">category</span></div>
