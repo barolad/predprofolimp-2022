@@ -1,5 +1,106 @@
+<!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% extends 'base.html' %}
 {% block content %}
 {{ super() }}
-Статистика
+<div class="container mt-2 mb-5">
+<h1>Статистика</h1>
+<form action="history" method="get" class="row">
+  <div class="col-6">
+      <label for="exampleFormControlInput1" class="form-label">От</label>
+      <div class="input-group">
+        <input type="date" class="form-control" id="date_from" name="date_from" placeholder="Дата" required>
+      </div>
+  </div>
+  <div class="col-6">
+      <label for="exampleFormControlInput1" class="form-label">До</label> 
+      <div class="input-group">
+        <input type="date" class="form-control" id="date_to" name="date_to" placeholder="Дата" required>
+      </div>
+  </div>
+
+  <div class="col-12 mt-1">
+    <div class="input-group">
+      <div class="input-group-text"><span class="material-icons">category</span></div>
+      <select id="inputState" class="form-select" multiple aria-label="multiple select example" aria-label="size 1 select example" name='category'>
+        <option value="m1">Еда и продукты</option>
+        <option value="m2">Дом и ремонт</option>
+        <option value="m3">Электроника</option>
+        <option value="m4">Хобби и развлечения</option>
+        <option value="m5">Одежда, обувь, аксессуары</option>
+        <option value="m6">Цветы и подарки</option>
+        <option value="m7">Обучение</option>
+        <option value="m8">Авто</option>
+        <option value="m9">Уход за собой</option>
+        <option value="m10">Кафе, бары и рестораны</option>
+        <option value="m11">Книги, кино, искусство</option>
+        <option value="p1">Зарплата</option>
+        <option value="p2">Дивиденды</option>
+        <option value="p3">Социальное пособие</option>
+        <option value="p4">Перевод</option>
+        <option value="p5">Возврат</option>
+        <option value="m12">Другое</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-12 mt-2 ">
+      <button class="btn btn-primary mt-1" type="submit" style="width: 100%;">Найти</button>
+  </div>
+</form>
+
+<div>
+    <canvas id="myChart"></canvas>
+</div>
+
+<script>
+    const label = {{days_in_month_end}};
+    const dataplus = {{data_start_plus}};
+    const dataminus = {{data_start_minus}};
+
+    const data = {
+      labels: label,
+      datasets: [{
+        label: 'Расходы за {{currentmonth}}',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: dataminus,
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        borderColor:'rgb(255, 99, 132)',
+        borderWidth: 3,
+        fill: true,
+        maxBarThickness: 6
+      },
+      {
+        label: 'Доходы за {{currentmonth}}',
+        backgroundColor: 'rgb(150, 212, 97)',
+        borderColor: 'rgb(150, 212, 97)',
+        data: dataplus, 
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        borderColor:'rgb(150, 212, 97)',
+        borderWidth: 3,
+        fill: true,
+        maxBarThickness: 6
+      }
+      ]
+    };
+  
+    const config = {
+      type: 'line',
+      data: data,
+      options: {}
+    };
+  </script>
+ <script>
+    const myChart = new Chart(
+      document.getElementById('myChart'),
+      config
+    );
+  </script> 
+
+</div>
+
 {% endblock %}
