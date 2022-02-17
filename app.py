@@ -1,5 +1,6 @@
 import datetime
 import tempfile
+from itertools import groupby
 
 from flask import Flask, render_template, request, session, url_for, flash, redirect, abort, g, make_response
 from DataBaseAPI import DataBaseAPI
@@ -177,18 +178,13 @@ def history():
 
     raw_data = dbase.getDataBetweenWithCategory(int(current_user.get_id()), date_from, date_to, categories)
     data = []
-    data_to_export=[]
+
     if raw_data:
         for raw in raw_data:
             d = {}
-            d_e={}
             d["img"] = getIcon(raw.category)
-            d_e["category"]=getCategoryName(raw.category)
             d["description"] = raw.description
-            d_e["description"] = raw.description
             d["datetime"] = datetime.datetime.combine(raw.date, raw.time).strftime("%d.%m.%Y %H:%M")
-            d_e["date"] = datetime.datetime.combine(raw.date, raw.time).strftime("%d.%m.%Y")
-            d_e["time"] = datetime.datetime.combine(raw.date, raw.time).strftime("%H:%M")
             month = datetime.datetime.combine(raw.date, raw.time).strftime("%m")
             if month == '01':
                 d["month"] = "января"
@@ -219,33 +215,73 @@ def history():
             else:
                 d["type"] = "minusmon"
             if raw.type:
-                d["amount"] = "+" + str(raw.amount) + "₽"
+                d["amount"] = "+" + str(raw.amount)
             else:
-                d["amount"] = "-" + str(raw.amount) + "₽"
-            if raw.type:
-                d_e["amount"] = "+" + str(raw.amount) + "руб."
-            else:
-                d_e["amount"] = "-" + str(raw.amount) + "руб."#₽
+                d["amount"] = "-" + str(raw.amount)
             data.append(d)
-            data_to_export.append(d_e)
             lenlist = len(data)
             date = datetime.date.today()
             currentyyear = date.strftime("%Y")
     csvf_name=app.root_path
     csvf=open(csvf_name+"/static/export_"+current_user.getName()+".csv","w")
-    writer=csv.DictWriter(csvf,fieldnames=["date","time","category","description","amount"],delimiter=';')
-    writer.writerow({"date":"Дата","time":"Время","category":"Категория","description":"Описание","amount":"Сумма"})
-    writer.writerows(data_to_export[::-1])
+    writer=csv.DictWriter(csvf,fieldnames=["month","type","amount","description","datetime","img"],delimiter=';')
+    writer.writerows(data[::-1])
     csvf.close()
-    return render_template('history.html', title='История операций', list=data[::-1], lenlist=lenlist,
+    return render_template('history.html', title='История операций', list=data, lenlist=lenlist,
                            currentyear=currentyyear)
-
 
 @app.route('/statistics', methods=['POST', 'GET'])
 @login_required
 def statistics():
-    dbase.getData(int(current_user.get_id()))
-    return render_template('statistics.html', title='Статистика', list=dbase.getData(current_user.get_id()))
+    data=[]
+    days_in_month_end=[]
+    date = datetime.date.today()
+    days_in_month_list=[0,31,28,31,30,31,30,31,31,30,31,30,31]
+    days_in_month=days_in_month_list[date.month]
+    date_from = "2022-02-01"
+    date_to = "2022-03-01"
+    currentmonth=date.strftime("%B")
+    amountminusass, amountplusass, datplusass, datminusass= [], [], [], []
+    raw_data = dbase.getDataBetween(int(current_user.get_id()), date_from, date_to)
+    for i in range(1,days_in_month+1):
+        days_in_month_end.append(i)
+    data_start_plus=[0]+[0]*len(days_in_month_end)
+    data_start_minus = [0]+[0]*len(days_in_month_end)
+    if raw_data:
+        for raw in raw_data:
+            if raw.type:
+                datplusass.append(int(datetime.datetime.combine(raw.date, raw.time).strftime("%d")))
+                hoplus = []
+                for i in range(len(datplusass)):
+                    hoplus.append(raw.amount)
+                amountplusass.append(int(float(str([el for el, _ in groupby(hoplus)])[1:-1])))
+            elif not(raw.type):
+                datminusass.append(int(datetime.datetime.combine(raw.date, raw.time).strftime("%d")))
+                hominus = []
+                for i in range(len(datminusass)):
+                    hominus.append(raw.amount)
+                amountminusass.append(int(float(str([el for el, _ in groupby(hominus)])[1:-1])))
+    dataplus = sorted(set(datplusass))
+    dataminus = sorted(set(datminusass))
+    amountplus = [0] * len(dataplus)
+    amountminus = [0] * len(dataminus)
+    for x in range(len(datplusass)):
+        for i in range(len(dataplus)):
+            if datplusass[x] == dataplus[i]:
+                amountplus[i] += amountplusass[x]
+    for x in range(len(datminusass)):
+        for i in range(len(dataminus)):
+            if datminusass[x] == dataminus[i]:
+                amountminus[i] += amountminusass[x]
+    for i in range(1, len(data_start_plus)):
+        for j in range(len(dataplus)):
+            if i == dataplus[j]:
+                data_start_plus[i]=amountplus[j]
+    for i in range(1, len(data_start_minus)):
+        for j in range(len(dataminus)):
+            if i == dataminus[j]:
+                data_start_minus[i]=amountminus[j]
+    return render_template('statistics.html', title='Статистика', currentmonth=currentmonth, days_in_month_end=days_in_month_end, data_start_plus=data_start_plus,data_start_minus=data_start_minus )
 
 
 @app.route('/avatar')
@@ -326,40 +362,7 @@ def getIcon(category):
 
 
 def getCategoryName(category):
-    if category == "m1":
-        return "Еда и продукты"
-    if category == "m2":
-        return "Дом и ремонт"
-    if category == "m3":
-        return "Электроника"
-    if category == "m4":
-        return "Хобби и развлечения"
-    if category == "m5":
-        return "Одежда, обувь, аксессуары"
-    if category == "m6":
-        return "Цветы и подарки"
-    if category == "m7":
-        return "Обучение"
-    if category == "m8":
-        return "Авто"
-    if category == "m9":
-        return "Уход за собой"
-    if category == "m10":
-        return "Кафе, бары и рестораны"
-    if category == "m11":
-        return "Книги, кино, искусство"
-    if category == "p1":
-        return "Зарплата"
-    if category == "p2":
-        return "Дивиденды"
-    if category == "p3":
-        return "Социальное пособие"
-    if category == "p4":
-        return "Перевод"
-    if category == "p5":
-        return "Возврат"
-    return "Другой"
-
+    pass
 
 
 if __name__ == '__main__':
