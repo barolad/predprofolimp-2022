@@ -1,0 +1,145 @@
+<style>
+        .plusmon{
+            color: #39d846;
+            font-weight: bold;
+        }
+        .minusmon{
+            color: #d83939;
+            font-weight: bold;
+        }
+        .accordion-button{
+            font-size: small !important;
+        }
+
+        .hist_table_th{
+          /* background-color: #d83939 !important; */
+          width: 10px !important;
+          border-radius: 50% !important;
+        }
+        .hist_table_td_1{
+          width: 10% !important;
+          font-weight: bold;
+          /* background-color: #d83939 !important; */
+
+        }
+        .hist_table_td_2{
+          width: 40% !important;
+          max-width: 150px;
+          /* background-color: #d83939 !important; */
+        }
+        .material-icons.md-18 { font-size: 10px; }
+</style>
+
+{% extends 'base.html' %}
+{% block content %}
+{{ super() }}
+<div class="container mt-2 mb-5">
+<div class="d-flex flex-row justify-content-between">
+<h1>История платежей </h1>
+<form action="history_export" method="post">
+<a class="btn btn-outline-secondary" href="..\static\export_timurka.csv" type="submit"><span class="material-icons" style="color: black;" > cloud_download</span></a>
+</form>
+</div>
+    <form action="history" method="get" class="row" style="margin-top: -10px !important;">
+        <div class="col-6">
+            <label for="exampleFormControlInput1" class="form-label">От</label>
+            <div class="input-group">
+              <input type="date" class="form-control" id="date_from" name="date_from" placeholder="Дата" required>
+            </div>
+        </div>
+        <div class="col-6">
+            <label for="exampleFormControlInput1" class="form-label">До</label> 
+            <div class="input-group">
+              <input type="date" class="form-control" id="date_to" name="date_to" placeholder="Дата" required>
+            </div>
+        </div>
+
+        <div class="col-12 mt-1">
+          <div class="input-group">
+            <div class="input-group-text"><span class="material-icons">category</span></div>
+            <select id="inputState" class="form-select" multiple aria-label="multiple select example" aria-label="size 1 select example" name='category'>
+              <option value="m1">Еда и продукты</option>
+              <option value="m2">Дом и ремонт</option>
+              <option value="m3">Электроника</option>
+              <option value="m4">Хобби и развлечения</option>
+              <option value="m5">Одежда, обувь, аксессуары</option>
+              <option value="m6">Цветы и подарки</option>
+              <option value="m7">Обучение</option>
+              <option value="m8">Авто</option>
+              <option value="m9">Уход за собой</option>
+              <option value="m10">Кафе, бары и рестораны</option>
+              <option value="m11">Книги, кино, искусство</option>
+              <option value="p1">Зарплата</option>
+              <option value="p2">Дивиденды</option>
+              <option value="p3">Социальное пособие</option>
+              <option value="p4">Перевод</option>
+              <option value="p5">Возврат</option>
+              <option value="m12">Другое</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-12 mt-2 ">
+            <button class="btn btn-primary mt-1" type="submit" style="width: 100%;">Найти</button>
+        </div>
+    </form>
+    <div class="tablesmon mt-2">
+      {%if lenlist==0%}
+      <h1 class="text-center">Ничего не нашлось</h1>
+      <h1 class="text-center"><span class="material-icons-outlined">
+        mood_bad
+        </span></h2>
+      {%else%}
+        <table class="table">
+            <tbody>
+            <tr>
+              <th class='hist_table_th' scope="col" style="width: 45px !important;"><span class="material-icons-outlined"></span></th>
+              <td class="hist_table_td_1" ><span class="material-icons-outlined">
+                schedule
+                </span></td>
+              <td class="hist_table_td_2">&nbsp;&nbsp;Описание   </td>
+              <td class="">&nbsp;&nbsp;&nbsp;Сумма</td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table ">
+          <h6 style="margin-top: -10px !important;">{{list[0]['datetime'][:2]}} {{list[0]['month']}}</h6>
+          <tbody>
+          <tr>
+              <th class='hist_table_th' scope="col"><span class="material-icons-outlined">{{list[0]['img']}}</span></th>
+              <td class="hist_table_td_1">{{list[0]['datetime'][10:]}}</td>
+              <td class="hist_table_td_2">{{list[0]['description']}}</td>
+              <td class="{{list[0]['type']}}">{{list[0]['amount']}} &#8381;</td>
+          </tr>  
+        {%for u in range(1,lenlist):%}
+        {%if list[u-1]['datetime'][:10]!=list[u]['datetime'][:10]:%}
+        </tbody>
+        </table> 
+        <table class="table ">
+          <h6 style="margin-top: -10px !important;">{{list[u]['datetime'][:2]}} {{list[u]['month']}}
+            {%if list[u]['datetime'][6:10]!=currentyear:%}
+            {{list[u]['datetime'][6:10]}}
+            {%endif%}
+          </h6>
+          <tbody>
+          <tr>
+              <th class='hist_table_th' scope="col"><span class="material-icons-outlined">{{list[u]['img']}}</span></th>
+              <td class="hist_table_td_1">{{list[u]['datetime'][10:]}}</td>
+              <td class="hist_table_td_2">{{list[u]['description']}}</td>
+              <td class="{{list[u]['type']}}">{{list[u]['amount']}} &#8381;</td>
+          </tr>
+            
+        {%else:%}
+        <tr>
+          <th class='hist_table_th' scope="col"><span class="material-icons-outlined">{{list[u]['img']}}</span></th>
+          <td class="hist_table_td_1">{{list[u]['datetime'][10:]}}</td>
+          <td class="hist_table_td_2">{{list[u]['description']}}</td>
+          <td class="{{list[u]['type']}}">{{list[u]['amount']}} &#8381;</td>
+        </tr>       
+      {%endif%}
+      
+      {%endfor%} 
+      {%endif%}
+    </div>
+</div>
+
+{% endblock %}
