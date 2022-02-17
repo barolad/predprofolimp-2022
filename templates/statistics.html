@@ -5,7 +5,7 @@
 {{ super() }}
 <div class="container mt-2 mb-5">
 <h1>Статистика</h1>
-<form action="history" method="get" class="row">
+<form action="statistics" method="get" class="row">
   <div class="col-6">
       <label for="exampleFormControlInput1" class="form-label">От</label>
       <div class="input-group">
@@ -58,36 +58,23 @@
     const dataminus = {{data_start_minus}};
 
     const data = {
-      labels: label,
-      datasets: [{
-        label: 'Расходы за {{currentmonth}}',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: dataminus,
-        tension: 0.4,
-        borderWidth: 0,
-        pointRadius: 0,
-        borderColor:'rgb(255, 99, 132)',
-        borderWidth: 3,
-        fill: true,
-        maxBarThickness: 6
-      },
-      {
-        label: 'Доходы за {{currentmonth}}',
-        backgroundColor: 'rgb(150, 212, 97)',
-        borderColor: 'rgb(150, 212, 97)',
-        data: dataplus, 
-        tension: 0.4,
-        borderWidth: 0,
-        pointRadius: 0,
-        borderColor:'rgb(150, 212, 97)',
-        borderWidth: 3,
-        fill: true,
-        maxBarThickness: 6
-      }
-      ]
+    labels: label,
+    datasets: [{
+    label: 'Расходы за {{currentmonth}}',
+    backgroundColor: 'rgb(255, 99, 132)',
+    borderColor: 'rgb(255, 99, 132)',
+    data: dataminus,
+
+    },
+    {
+    label: 'Доходы за {{currentmonth}}',
+    backgroundColor: 'rgb(150, 212, 97)',
+    borderColor: 'rgb(150, 212, 97)',
+    data: dataplus,
+
+    }
+    ]
     };
-  
     const config = {
       type: 'line',
       data: data,

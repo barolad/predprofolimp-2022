@@ -164,12 +164,20 @@ def history():
     lenlist = 0
     currentyyear = ''
     try:
+        base=request.args["base_product"]
+    except:
+        base="default"
+    try:
         date_from = request.args["date_from"]
     except:
+        date_from = "0001-01-01"
+    if(date_from==""):
         date_from = "0001-01-01"
     try:
         date_to = request.args["date_to"]
     except:
+        date_to = "9000-01-01"
+    if(date_to==""):
         date_to = "9000-01-01"
     categories = request.args.getlist("category")
     if (len(categories) == 0):
@@ -178,75 +186,65 @@ def history():
 
     raw_data = dbase.getDataBetweenWithCategory(int(current_user.get_id()), date_from, date_to, categories)
     data = []
-
+    data_to_export = []
     if raw_data:
         for raw in raw_data:
             d = {}
+            d_e = {}
             d["img"] = getIcon(raw.category)
+            d_e["category"] = getCategoryName(raw.category)
             d["description"] = raw.description
+            d_e["description"] = raw.description
             d["datetime"] = datetime.datetime.combine(raw.date, raw.time).strftime("%d.%m.%Y %H:%M")
+            d_e["date"] = datetime.datetime.combine(raw.date, raw.time).strftime("%d.%m.%Y")
+            d_e["time"] = datetime.datetime.combine(raw.date, raw.time).strftime("%H:%M")
             month = datetime.datetime.combine(raw.date, raw.time).strftime("%m")
-            if month == '01':
-                d["month"] = "января"
-            elif month == '02':
-                d["month"] = "февраля"
-            elif month == '03':
-                d["month"] = "марта"
-            elif month == '04':
-                d["month"] = "апреля"
-            elif month == '05':
-                d["month"] = "мая"
-            elif month == '06':
-                d["month"] = "июня"
-            elif month == '07':
-                d["month"] = "июля"
-            elif month == '08':
-                d["month"] = "августа"
-            elif month == '09':
-                d["month"] = "сентября"
-            elif month == '10':
-                d["month"] = "октября"
-            elif month == '11':
-                d["month"] = "ноября"
-            elif month == '12':
-                d["month"] = "декабря"
+            d["month"] = getMonthName(month)
             if raw.type:
                 d["type"] = "plusmon"
             else:
                 d["type"] = "minusmon"
             if raw.type:
-                d["amount"] = "+" + str(raw.amount)
+                d["amount"] = "+" + str(round(raw.amount/getBaseCost(base),2))+ " " + getBaseName(base)
             else:
-                d["amount"] = "-" + str(raw.amount)
+                d["amount"] = "-" + str(round(raw.amount/getBaseCost(base),2)) + " " + getBaseName(base)
+            if raw.type:
+                d_e["amount"] = "+" + str(round(raw.amount/getBaseCost(base),2)) + " " + getBaseName(base)
+            else:
+                d_e["amount"] = "-" + str(round(raw.amount/getBaseCost(base),2)) + " " + getBaseName(base)
             data.append(d)
+            data_to_export.append(d_e)
             lenlist = len(data)
             date = datetime.date.today()
             currentyyear = date.strftime("%Y")
-    csvf_name=app.root_path
-    csvf=open(csvf_name+"/static/export_"+current_user.getName()+".csv","w")
-    writer=csv.DictWriter(csvf,fieldnames=["month","type","amount","description","datetime","img"],delimiter=';')
-    writer.writerows(data[::-1])
+    csvf_name = app.root_path
+    csvf = open(csvf_name + "/static/export_" + current_user.getName() + ".csv", "w")
+    writer = csv.DictWriter(csvf, fieldnames=["date", "time", "category", "description", "amount"], delimiter=';')
+    writer.writerow(
+        {"date": "Дата", "time": "Время", "category": "Категория", "description": "Описание", "amount": "Сумма"})
+    writer.writerows(data_to_export[::-1])
     csvf.close()
-    return render_template('history.html', title='История операций', list=data, lenlist=lenlist,
-                           currentyear=currentyyear)
+    return render_template('history.html', title='История операций', list=data[::-1], lenlist=lenlist,
+                           currentyear=currentyyear, login=current_user.getName())
+
 
 @app.route('/statistics', methods=['POST', 'GET'])
 @login_required
 def statistics():
-    data=[]
-    days_in_month_end=[]
+    data = []
+    days_in_month_end = []
     date = datetime.date.today()
-    days_in_month_list=[0,31,28,31,30,31,30,31,31,30,31,30,31]
-    days_in_month=days_in_month_list[date.month]
+    days_in_month_list = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    days_in_month = days_in_month_list[date.month]
     date_from = "2022-02-01"
     date_to = "2022-03-01"
-    currentmonth=date.strftime("%B")
-    amountminusass, amountplusass, datplusass, datminusass= [], [], [], []
+    currentmonth = getMonthNameImP(date.strftime("%m"))
+    amountminusass, amountplusass, datplusass, datminusass = [], [], [], []
     raw_data = dbase.getDataBetween(int(current_user.get_id()), date_from, date_to)
-    for i in range(1,days_in_month+1):
+    for i in range(1, days_in_month + 1):
         days_in_month_end.append(i)
-    data_start_plus=[0]+[0]*len(days_in_month_end)
-    data_start_minus = [0]+[0]*len(days_in_month_end)
+    data_start_plus = [0] + [0] * len(days_in_month_end)
+    data_start_minus = [0] + [0] * len(days_in_month_end)
     if raw_data:
         for raw in raw_data:
             if raw.type:
@@ -255,7 +253,7 @@ def statistics():
                 for i in range(len(datplusass)):
                     hoplus.append(raw.amount)
                 amountplusass.append(int(float(str([el for el, _ in groupby(hoplus)])[1:-1])))
-            elif not(raw.type):
+            elif not (raw.type):
                 datminusass.append(int(datetime.datetime.combine(raw.date, raw.time).strftime("%d")))
                 hominus = []
                 for i in range(len(datminusass)):
@@ -276,12 +274,15 @@ def statistics():
     for i in range(1, len(data_start_plus)):
         for j in range(len(dataplus)):
             if i == dataplus[j]:
-                data_start_plus[i]=amountplus[j]
+                data_start_plus[i] = amountplus[j]
     for i in range(1, len(data_start_minus)):
         for j in range(len(dataminus)):
             if i == dataminus[j]:
-                data_start_minus[i]=amountminus[j]
-    return render_template('statistics.html', title='Статистика', currentmonth=currentmonth, days_in_month_end=days_in_month_end, data_start_plus=data_start_plus,data_start_minus=data_start_minus )
+                data_start_minus[i] = amountminus[j]
+    # days_in_month_end[0]="01.02"
+    return render_template('statistics.html', title='Статистика', currentmonth=currentmonth,
+                           days_in_month_end=days_in_month_end, data_start_plus=data_start_plus,
+                           data_start_minus=data_start_minus)
 
 
 @app.route('/avatar')
@@ -363,6 +364,119 @@ def getIcon(category):
 
 def getCategoryName(category):
     pass
+    if category == "m1":
+        return "Еда и продукты"
+    if category == "m2":
+        return "Дом и ремонт"
+    if category == "m3":
+        return "Электроника"
+    if category == "m4":
+        return "Хобби и развлечения"
+    if category == "m5":
+        return "Одежда, обувь, аксессуары"
+    if category == "m6":
+        return "Цветы и подарки"
+    if category == "m7":
+        return "Обучение"
+    if category == "m8":
+        return "Авто"
+    if category == "m9":
+        return "Уход за собой"
+    if category == "m10":
+        return "Кафе, бары и рестораны"
+    if category == "m11":
+        return "Книги, кино, искусство"
+    if category == "p1":
+        return "Зарплата"
+    if category == "p2":
+        return "Дивиденды"
+    if category == "p3":
+        return "Социальное пособие"
+    if category == "p4":
+        return "Перевод"
+    if category == "p5":
+        return "Возврат"
+    return "Другое"
+
+
+def getMonthNameImP(month):
+    if month == '01':
+        return "январь"
+    elif month == '02':
+        return "февраль"
+    elif month == '03':
+        return "март"
+    elif month == '04':
+        return "апрель"
+    elif month == '05':
+        return "май"
+    elif month == '06':
+        return "июнь"
+    elif month == '07':
+        return "июль"
+    elif month == '08':
+        return "август"
+    elif month == '09':
+        return "сентябрь"
+    elif month == '10':
+        return "октябрь"
+    elif month == '11':
+        return "ноябрь"
+    elif month == '12':
+        return "декабрь"
+
+
+def getMonthName(month):
+    if month == '01':
+        return "января"
+    elif month == '02':
+        return "февраля"
+    elif month == '03':
+        return "марта"
+    elif month == '04':
+        return "апреля"
+    elif month == '05':
+        return "мая"
+    elif month == '06':
+        return "июня"
+    elif month == '07':
+        return "июля"
+    elif month == '08':
+        return "августа"
+    elif month == '09':
+        return "сентября"
+    elif month == '10':
+        return "октября"
+    elif month == '11':
+        return "ноября"
+    elif month == '12':
+        return "декабря"
+
+
+def getBaseCost(name):
+    if name == "donut":
+        return 30
+    if name == "BigMac":
+        return 140
+    if name == "Bus":
+        return 50
+    if name == "Taxi":
+        return 200
+    if name == "default":
+        return 1
+
+
+def getBaseName(name):
+    if name == "donut":
+        return "понч."
+    if name == "BigMac":
+        return "б.м."
+    if name == "Bus":
+        return "автоб."
+    if name == "Taxi":
+        return "такс."
+    if name == "default":
+        return "руб."
 
 
 if __name__ == '__main__':
