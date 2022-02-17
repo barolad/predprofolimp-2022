@@ -177,13 +177,18 @@ def history():
 
     raw_data = dbase.getDataBetweenWithCategory(int(current_user.get_id()), date_from, date_to, categories)
     data = []
-
+    data_to_export=[]
     if raw_data:
         for raw in raw_data:
             d = {}
+            d_e={}
             d["img"] = getIcon(raw.category)
+            d_e["category"]=getCategoryName(raw.category)
             d["description"] = raw.description
+            d_e["description"] = raw.description
             d["datetime"] = datetime.datetime.combine(raw.date, raw.time).strftime("%d.%m.%Y %H:%M")
+            d_e["date"] = datetime.datetime.combine(raw.date, raw.time).strftime("%d.%m.%Y")
+            d_e["time"] = datetime.datetime.combine(raw.date, raw.time).strftime("%H:%M")
             month = datetime.datetime.combine(raw.date, raw.time).strftime("%m")
             if month == '01':
                 d["month"] = "января"
@@ -214,17 +219,23 @@ def history():
             else:
                 d["type"] = "minusmon"
             if raw.type:
-                d["amount"] = "+" + str(raw.amount) + "руб."
+                d["amount"] = "+" + str(raw.amount) + "₽"
             else:
-                d["amount"] = "-" + str(raw.amount) + "руб."#₽
+                d["amount"] = "-" + str(raw.amount) + "₽"
+            if raw.type:
+                d_e["amount"] = "+" + str(raw.amount) + "руб."
+            else:
+                d_e["amount"] = "-" + str(raw.amount) + "руб."#₽
             data.append(d)
+            data_to_export.append(d_e)
             lenlist = len(data)
             date = datetime.date.today()
             currentyyear = date.strftime("%Y")
     csvf_name=app.root_path
     csvf=open(csvf_name+"/static/export_"+current_user.getName()+".csv","w")
-    writer=csv.DictWriter(csvf,fieldnames=["month","type","amount","description","datetime","img"],delimiter=';')
-    writer.writerows(data[::-1])
+    writer=csv.DictWriter(csvf,fieldnames=["date","time","category","description","amount"],delimiter=';')
+    writer.writerow({"date":"Дата","time":"Время","category":"Категория","description":"Описание","amount":"Сумма"})
+    writer.writerows(data_to_export[::-1])
     csvf.close()
     return render_template('history.html', title='История операций', list=data[::-1], lenlist=lenlist,
                            currentyear=currentyyear)
@@ -315,7 +326,40 @@ def getIcon(category):
 
 
 def getCategoryName(category):
-    pass
+    if category == "m1":
+        return "Еда и продукты"
+    if category == "m2":
+        return "Дом и ремонт"
+    if category == "m3":
+        return "Электроника"
+    if category == "m4":
+        return "Хобби и развлечения"
+    if category == "m5":
+        return "Одежда, обувь, аксессуары"
+    if category == "m6":
+        return "Цветы и подарки"
+    if category == "m7":
+        return "Обучение"
+    if category == "m8":
+        return "Авто"
+    if category == "m9":
+        return "Уход за собой"
+    if category == "m10":
+        return "Кафе, бары и рестораны"
+    if category == "m11":
+        return "Книги, кино, искусство"
+    if category == "p1":
+        return "Зарплата"
+    if category == "p2":
+        return "Дивиденды"
+    if category == "p3":
+        return "Социальное пособие"
+    if category == "p4":
+        return "Перевод"
+    if category == "p5":
+        return "Возврат"
+    return "Другой"
+
 
 
 if __name__ == '__main__':
