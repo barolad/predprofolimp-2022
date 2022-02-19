@@ -1,7 +1,7 @@
 import datetime
 import tempfile
 from itertools import groupby
-
+from dateutil.relativedelta import relativedelta
 from flask import Flask, render_template, request, session, url_for, flash, redirect, abort, g, make_response
 from DataBaseAPI import DataBaseAPI
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
@@ -233,14 +233,17 @@ def history():
 def statistics():
     data = []
     days_in_month_end = []
-    date = datetime.date.today()
+    try:
+        date = request.args["date_from"];
+    except:
+        date = datetime.date.today()
     days_in_month_list = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    days_in_month = days_in_month_list[date.month]
-    date_from = "2022-02-01"
-    date_to = "2022-03-01"
-    currentmonth = getMonthNameImP(date.strftime("%m"))
+    date_from = datetime.datetime.strptime(date,"%Y-%m").date()
+    days_in_month = days_in_month_list[date_from.month]
+    date_to = date_from+ relativedelta(months=1)
+    currentmonth = getMonthNameImP(date_from.strftime("%m"))
     amountminusass, amountplusass, datplusass, datminusass = [], [], [], []
-    raw_data = dbase.getDataBetween(int(current_user.get_id()), date_from, date_to)
+    raw_data = dbase.getDataBetween(int(current_user.get_id()), date_from.strftime("%Y-%m-%d"), date_to.strftime("%Y-%m-%d"))
     for i in range(1, days_in_month + 1):
         days_in_month_end.append(i)
     data_start_plus = [0] + [0] * len(days_in_month_end)

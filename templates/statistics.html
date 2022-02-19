@@ -6,21 +6,16 @@
 <div class="container mt-2 mb-5">
 <h1>Статистика</h1>
 <form action="statistics" method="get" class="row">
-  <div class="col-6">
-      <label for="exampleFormControlInput1" class="form-label">От</label>
-      <div class="input-group">
-        <input type="date" class="form-control" id="date_from" name="date_from" placeholder="Дата" required>
-      </div>
-  </div>
-  <div class="col-6">
-      <label for="exampleFormControlInput1" class="form-label">До</label> 
-      <div class="input-group">
-        <input type="date" class="form-control" id="date_to" name="date_to" placeholder="Дата" required>
-      </div>
-  </div>
+<div class="col-12">
+<label for="exampleFormControlInput1" class="form-label">Выберите период</label>
+<div class="input-group">
+<input type="month" class="form-control" id="date_from" name="date_from" placeholder="Дата" required>
+</div>
+</div>
 
-  <div class="col-12 mt-1">
-    <div class="input-group">
+<div class="col-12 mt-2">
+<div class="input-group">
+
       <div class="input-group-text"><span class="material-icons">category</span></div>
       <select id="inputState" class="form-select" multiple aria-label="multiple select example" aria-label="size 1 select example" name='category'>
         <option value="m1">Еда и продукты</option>
