@@ -52,8 +52,74 @@ def index():
     month_list = ['', 'январе', 'феврале', 'марте', 'апреле', 'мае', 'июне',
                   'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре']
     currentmonth = month_list[date.month]
+
+    # общий счёт
+    date_from = ""
+    date_to = ""
+    categories = []
+    lenlist = 0
+    currentyyear = ''
+    try:
+        date_from = request.args["date_from"]
+    except:
+        date_from = "0001-01-01"
+    try:
+        date_to = request.args["date_to"]
+    except:
+        date_to = "9000-01-01"
+    categories = request.args.getlist("category")
+    if len(categories) == 0:
+        categories = ["m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8", "m9", "m10", "m11", "m12", "p1", "p2", "p3", "p4",
+                      "p5"]
+    raw_data_forbank = dbase.getDataBetweenWithCategory(int(current_user.get_id()), date_from, date_to, categories)
+    bankamount = 0
+    if raw_data_forbank:
+        for raw in raw_data_forbank:
+            if raw.type:
+                bankamount += int(raw.amount)
+            else:
+                bankamount -= int(raw.amount)
+
+    bankplusone = bankminusone = bankplustwo = bankminustwo = 0
+    date_from = "2022-01-01"
+    date_to = "2022-01-31"
+    raw_data_forexp = dbase.getDataBetween(int(current_user.get_id()), date_from, date_to)
+    if raw_data_forexp:
+        for raw in raw_data_forexp:
+            if raw.type:
+                bankplusone += int(raw.amount)
+            else:
+                bankminusone += int(raw.amount)
+
+    date_from = "2022-02-01"
+    date_to = "2022-02-28"
+    raw_data_forexp = dbase.getDataBetween(int(current_user.get_id()), date_from, date_to)
+
+    if raw_data_forexp:
+        for raw in raw_data_forexp:
+            if raw.type:
+                bankplustwo += int(raw.amount)
+            else:
+                bankminustwo += int(raw.amount)
+
+    if bankminusone > bankminustwo:
+        minuses = 'меньше'
+        bankminus = bankminusone - bankminustwo
+    else:
+        minuses = 'больше'
+        bankminus = bankminustwo - bankminusone
+
+    if bankplusone > bankplustwo:
+        plusess = 'меньше'
+        bankplus = bankplusone - bankplustwo
+    else:
+        plusess = 'больше'
+        bankplus = bankplustwo - bankplusone
+
     return render_template('index.html', title='WEBUDGET', inf_future=inf_future, inf_now=inf_now,
-                           currentmonth=currentmonth)
+                           currentmonth=currentmonth, bankamount=bankamount, minuses=minuses,
+                           plusess=plusess, bankplus=bankplus, bankminus=bankminus,
+                           bankpluscur=bankplustwo, bankminuscur=bankminustwo)
 
 
 @app.route("/login", methods=["POST", "GET"])
@@ -323,6 +389,23 @@ def logout():
     logout_user()
     flash("Вы успешно вышли из аккаунта!", category='alert alert-success')
     return redirect(url_for('login'))
+
+
+@app.route('/ipc')
+@login_required
+def ipc():
+    # Парсинг инфы с сайта центробанка
+    r = requests.get('http://www.cbr.ru/')
+    html = BS(r.content, 'html.parser')
+    O = []
+
+    for el in html.select('.main-indicator'):
+        title = el.select('.main-indicator_value')
+        title = (title[0].text).split('%')
+        title.pop(1)
+        O.append(title)
+    inf_now = str(O[1])[2:-2]
+    return render_template('ipc.html',title='Остаток с учетом инфляции', inf_now=inf_now)
 
 
 @app.errorhandler(404)
