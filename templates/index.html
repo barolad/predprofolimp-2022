@@ -41,32 +41,39 @@
     .inf{
         color: white;
     }
-
+    .balance_box_2{
+        background-color: #464646;
+        border-radius: 10px;
+        width: auto;
+        height: 145px;
+        width: auto;
+        color: white;
+    }
 </style>
 <div class="container mt-3">
     <div class="avatar_and_name row">
         <div class="col-2"><img src="{{url_for('avatar')}}" class="rounded-circle" style="border: 3px #4a8ef1 solid; border-radius: 50% !important; width: 50px !important; height: 50px !important;"></div>
-        <div class="col"><a style='text-decoration: none !important; color: #464646;' class="" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"><h1 style="margin-top: 5px !important; text-decoration: none !important;">{{ current_user.getFirstName() }}<svg style="margin-left: -10px; color: #4a8ef1;" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+        <div class="col"><a style='text-decoration: none !important; color: #464646;' class="" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"><h1 style="margin-top: 5px !important; text-decoration: none !important;">{{ current_user.getFirstName() }}  <svg style="margin-left: -10px; color: #4a8ef1;" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
             <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
           </svg></a></div>
     </div>
     <div class="balance_box mt-3 d-flex flex-row justify-content-between" style="padding: 10px;">
         <div class="col-2" style="background-color: #8bb9ff; border: 10px #4a8ef1 solid; border-radius: 50% !important; width: 50px !important; height: 50px !important;"><span class="material-icons-outlined " style="margin-top: 10%; margin-left: 10%; font-weight: bold; color: white;">currency_ruble</span>
         </div>
-        <h1 style="margin-top: 7px;">10345000.00₽</h1>
+        <h1 style="margin-top: 7px;">{{bankamount}}&#8381;</h1>
     </div>
     <div class="d-flex flex-row justify-content-between mt-2" style="margin-left: 0px; margin-right: 0px;">
         <div class="balance_box_1 col-6">
             <h5>Доходы</h5>
             <h6>В {{currentmonth}}</h6>
-            <h5 class="monp">1000 ₽</h5>
-            <p>На 1000 ₽ больше, чем в предыдущем месяце</p>
+            <h5 class="monp">{{bankpluscur}} ₽</h5>
+            <p>На {{bankplus}} ₽ {{plusess}}, чем в январе</p>
         </div>
         <div class="balance_box_1 col-6">
             <h5>Расходы</h5>
             <h6>В {{currentmonth}}</h6>
-            <h5 class="monm">1000 ₽</h5>
-            <p>На 300 ₽ меньше, чем в предыдущем месяце</p>
+            <h5 class="monm">{{bankminuscur}} ₽</h5>
+            <p>На {{bankminus}} ₽ {{minuses}}, чем в январе</p>
         </div>
     </div>
     <div class="balance_box mt-2">
@@ -77,18 +84,15 @@
             <p class='col-6' style="margin-top: -11px; color: white;">Цель в России</p>
             <p class='col-6' style="margin-top: -11px; color: white;">Текущая в России</p>
         </div>
-        <div class="d-flex flex-row justify-content-between" style="margin-top: -10px;">
-            
-            
+        <div class="balance_box_2">
+            <h5 class="text-center">Остаток с учетом инфляции</h5>
+            <div class="text-center mt-2 ">
+                <a href="{{url_for('ipc')}}" class="col-4 btn btn-primary mx-4">Рассчитать</a>
+                <img src="../static/pig.png" width="100px" height="100px" alt="" srcset="" class="mx-4">
+            </div>
         </div>
     </div>
 </div>
-
-
-
-
-
-
 
 
 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
