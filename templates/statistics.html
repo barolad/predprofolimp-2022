@@ -1,10 +1,16 @@
-<!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% extends 'base.html' %}
 {% block content %}
 {{ super() }}
-<div class="container mt-2 mb-5">
+<div class="container mt-2 mb-5" style="padding-bottom: 20px !important">
 <h1>Статистика</h1>
+
+<div class="btn-group text-center d-flex">
+  <a href="{{url_for('statistics')}}" class="btn btn-outline-primary active" aria-current="page">Графики</a>
+  <a href="{{url_for('balance')}}" class="btn btn-outline-primary">Остаток</a>
+  <a href="{{url_for('prediction')}}" class="btn btn-outline-primary">Прогноз</a>
+</div>
+
 <form action="statistics" method="get" class="row">
 <div class="col-12">
 <label for="exampleFormControlInput1" class="form-label">Выберите период</label>

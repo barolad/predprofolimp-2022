@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 {{ super() }}
-<div class="container">
+<div class="container" style="padding-bottom: 65px !important">
     <h1>Остаток с учетом инфляции</h1>
-    <form action='/ipc' method='post' class="needs-validation" novalidate>
+
+    <div class="btn-group text-center d-flex">
+        <a href="{{url_for('statistics')}}" class="btn btn-outline-primary" aria-current="page">Графики</a>
+        <a href="{{url_for('balance')}}" class="btn btn-outline-primary active">Остаток</a>
+        <a href="{{url_for('prediction')}}" class="btn btn-outline-primary">Прогноз</a>
+      </div>
+
+    <form action='/balance' method='post' class="needs-validation" novalidate>
+        <h1 style="color: #0d6efd; text-align: center;">{{result_s}}&#8381;</h1>
         <div class="input-group ">
             <label for="exampleFormControlInput1" class="form-label">Стартовая сумма</label>
             <div class="input-group">
@@ -57,7 +65,7 @@
         <div class="d-grid gap-2 d-md-block">
             <button class="btn btn-primary mt-3" type="submit" style="height: 66px;">Рассчитать</button>
           </div>
-        <h1>{{result_s}}</h1>
+        
     </form>
 </div>
 {% endblock %}

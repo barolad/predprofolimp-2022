@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="container mt-2 mb-5" style="padding-bottom: 20px !important">
+<h1>Прогнозирование расходов</h1>
+
+<div class="btn-group text-center d-flex">
+    <a href="{{url_for('statistics')}}" class="btn btn-outline-primary" aria-current="page">Графики</a>
+    <a href="{{url_for('balance')}}" class="btn btn-outline-primary">Остаток</a>
+    <a href="{{url_for('prediction')}}" class="btn btn-outline-primary active">Прогноз</a>
+  </div>
+
+  <div>
+    <canvas id="LinearMonth" width="200 !important" height="180 !important"></canvas>
+  </div>
+<h5>Какой-то умный текст по типу: ваши расходы к концу месяца составят 50 рублей.</h5>
+
+<div>
+  <canvas id="PolimiMonth" width="200 !important" height="180 !important"></canvas>
+</div>
+<h5>Какой-то умный текст по типу: ваши расходы к концу месяца составят 60 рублей.</h5>
+<script>
+  new Chart(document.getElementById("LinearMonth"),
+      {
+    type: 'line',
+    label: "Прогнозирование расходов с помощью модели линейной регрессии",
+    data: {
+      labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      datasets: [
+        {
+          label: "Расходы",
+          backgroundColor: 'rgb(255, 99, 132)',
+          data: [2478,5267,734,784,433,1900, 2478,5267,734,784,433,1900],
+          radius: 5,
+          tension: 0.2,
+          interaction: {
+              intersect: false,
+            }
+      }
+      ],
+    }});
+
+    new Chart(document.getElementById("PolimiMonth"),
+      {
+    type: 'line',
+    label: "Прогнозирование расходов с помощью модели линейной регрессии",
+    data: {
+      labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      datasets: [
+        {
+          label: "Расходы",
+          backgroundColor: 'rgb(150, 212, 97)',
+          data: [1900, 433, 784, 734, 5267, 2478, 1900, 433, 784, 734, 5267, 2478],
+          radius: 5,
+          tension: 0.2,
+          interaction: {
+              intersect: false,
+            }
+      }
+      ],
+    }});
+</script>
+</div>
+{% endblock %}
