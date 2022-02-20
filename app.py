@@ -314,6 +314,7 @@ def statistics():
         days_in_month_end.append(i)
     data_start_plus = [0] + [0] * len(days_in_month_end)
     data_start_minus = [0] + [0] * len(days_in_month_end)
+    categsum = [0] + [0] * 12
     if raw_data:
         for raw in raw_data:
             if raw.type:
@@ -328,6 +329,11 @@ def statistics():
                 for i in range(len(datminusass)):
                     hominus.append(raw.amount)
                 amountminusass.append(int(float(str([el for el, _ in groupby(hominus)])[1:-1])))
+
+                for x in range(1, 12+1):
+                    if raw.category == 'm'+str(x):
+                        categsum[x] += raw.amount
+                        
     dataplus = sorted(set(datplusass))
     dataminus = sorted(set(datminusass))
     amountplus = [0] * len(dataplus)
@@ -348,10 +354,12 @@ def statistics():
         for j in range(len(dataminus)):
             if i == dataminus[j]:
                 data_start_minus[i] = amountminus[j]
-    # days_in_month_end[0]="01.02"
+    
+
+
     return render_template('statistics.html', title='Статистика', currentmonth=currentmonth,
                            days_in_month_end=days_in_month_end, data_start_plus=data_start_plus,
-                           data_start_minus=data_start_minus)
+                           data_start_minus=data_start_minus, categsum=categsum[1:])
 
 @app.route('/prediction', methods=['POST', 'GET'])
 @login_required
