@@ -87,10 +87,19 @@
         <div class="balance_box_2">
             <h5 class="text-center">Остаток с учетом инфляции</h5>
             <div class="text-center mt-2 ">
-                <a href="{{url_for('ipc')}}" class="col-4 btn btn-primary mx-4">Рассчитать</a>
+                <a href="{{url_for('balance')}}" class="col-4 btn btn-primary mx-4">Рассчитать</a>
                 <img src="../static/pig.png" width="100px" height="100px" alt="" srcset="" class="mx-4">
             </div>
         </div>
+        <div style="padding-bottom: 65px !important;">
+        <div class="balance_box_2" style="margin-top: 10px;">
+            <h5 class="text-center">Прогнозирование расходов</h5>
+            <div class="text-center mt-2 "> 
+                <img src="../static/pig.png" width="100px" height="100px" alt="" srcset="" class="mx-4" style="transform: scale(-1, 1)">
+                <a href="{{url_for('prediction')}}" class="col-4 btn btn-primary mx-4">Прогноз расходов</a>
+                
+            </div>
+        </div></div>
     </div>
 </div>
 
