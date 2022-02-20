@@ -7,9 +7,25 @@
 <h1>Прогнозирование расходов</h1>
 
 <div class="btn-group text-center d-flex">
-    <a href="{{url_for('statistics')}}" class="btn btn-outline-primary" aria-current="page">Графики</a>
-    <a href="{{url_for('balance')}}" class="btn btn-outline-primary">Остаток</a>
-    <a href="{{url_for('prediction')}}" class="btn btn-outline-primary active">Прогноз</a>
+    <a href="{{url_for('prediction')}}" class="btn btn-outline-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Полиномиальная регрессия</a>
+    <a href="{{url_for('prediction')}}" class="btn btn-outline-primary active">Линейная регрессия</a>
+  </div>
+
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-body">
+        <h1>Прогнозирование расходов</h1>
+      <div>
+        <div>
+          <div class="btn-group text-center d-flex">
+            <a href="{{url_for('prediction')}}" class="btn btn-outline-primary active" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Полиномиальная регрессия</a>
+            <a href="{{url_for('prediction')}}" class="btn btn-outline-primary">Линейная регрессия</a>
+          </div>
+          <canvas id="PolimiMonth" width="200 !important" height="180 !important"></canvas>
+        </div>
+        <h5>Какой-то умный текст по типу: ваши расходы к концу месяца составят 60 рублей.</h5>
+      </div>
+    </div>
   </div>
 
   <div>
@@ -17,10 +33,7 @@
   </div>
 <h5>Какой-то умный текст по типу: ваши расходы к концу месяца составят 50 рублей.</h5>
 
-<div>
-  <canvas id="PolimiMonth" width="200 !important" height="180 !important"></canvas>
-</div>
-<h5>Какой-то умный текст по типу: ваши расходы к концу месяца составят 60 рублей.</h5>
+
 <script>
   new Chart(document.getElementById("LinearMonth"),
       {
@@ -62,5 +75,7 @@
       ],
     }});
 </script>
+
+
 </div>
 {% endblock %}
