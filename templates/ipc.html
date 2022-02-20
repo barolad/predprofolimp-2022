@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="input-group ">
-            <label for="exampleFormControlInput1" class="form-label">Сумма каждого пополнения</label>
+            <label for="exampleFormControlInput1" class="form-label">Ожидаемая сумма ежемесячных пополнений</label>
             <div class="input-group">
                 <input type="text" class="form-control" name="input_text2" id="input_text2" max="10000000" value="20000" onchange="rangeinput1.value = input_text2.value" />
             </div>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="input-group ">
-            <label for="exampleFormControlInput1" class="form-label">Число пополнений в год</label>
+            <label for="exampleFormControlInput1" class="form-label">Прогноз остатка на 1, 2, ... , 12 месяцев</label>
             <div class="input-group">
                 <input type="text" class="form-control" name="input_text3" id="input_text3" max="12" value="2" onchange="rangeinput3.value = input_text1.value" />
             </div>
@@ -35,18 +35,29 @@
             </div>
         </div>
         <div class="input-group ">
-            <label for="exampleFormControlInput1" class="form-label">Инфляция</label>
+            <label for="exampleFormControlInput1" class="form-label">Ожидаемая сумма ежемесячных расходов</label>
             <div class="input-group">
-                <input type="text" class="form-control" name="input_text4" id="input_text4" max="100" value="{{inf_now}}" onchange="rangeinput4.value = input_text4.value" />
+                <input type="text" class="form-control" name="input_text4" id="input_text4" max="10000000" value="20000" onchange="rangeinput4.value = input_text4.value" />
             </div>
             <div class="input-group">
-                <input style='width: 100%;' type="range" oninput="input_text4.value = rangeinput4.value" class="form-control-range slider" type="range" min="0" max="100" value="{{inf_now}}" id="rangeinput4" step="0.1" onchange="input_text4.value = rangeinput4.value" >
-                <small>Текущее значение в России: {{inf_now}}%</small>
+                <input style='width: 100%;' type="range" oninput="input_text4.value = rangeinput4.value" class="form-control-range slider" type="range" min="5000" max="10000000" value="20000" id="rangeinput4" step="10000" onchange="input_text4.value = rangeinput4.value" >
+                <small>До 10 млн.</small>
+            </div>
+        </div>
+        <div class="input-group ">
+            <label for="exampleFormControlInput1" class="form-label">ИПЦ</label>
+            <div class="input-group">
+                <input type="text" class="form-control" name="input_text5" id="input_text5" max="200" value="100.6742" onchange="rangeinput5.value = input_text5.value" />
+            </div>
+            <div class="input-group">
+                <input style='width: 100%;' type="range" oninput="input_text5.value = rangeinput5.value" class="form-control-range slider" type="range" min="0.01" max="200" value="100.6742" id="rangeinput5" step="0.1" onchange="input_text5.value = rangeinput5.value" >
+                <small>Усредненное месячное значение ИПЦ на основе данных 2021 г. (за 12 мес.)</small>
             </div>
         </div>
         <div class="d-grid gap-2 d-md-block">
             <button class="btn btn-primary mt-3" type="submit" style="height: 66px;">Рассчитать</button>
           </div>
+        <h1>{{result_s}}</h1>
     </form>
 </div>
 {% endblock %}

@@ -391,21 +391,23 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/ipc')
+@app.route('/ipc', methods=['POST', 'GET'])
 @login_required
 def ipc():
-    # Парсинг инфы с сайта центробанка
-    r = requests.get('http://www.cbr.ru/')
-    html = BS(r.content, 'html.parser')
-    O = []
-
-    for el in html.select('.main-indicator'):
-        title = el.select('.main-indicator_value')
-        title = (title[0].text).split('%')
-        title.pop(1)
-        O.append(title)
-    inf_now = str(O[1])[2:-2]
-    return render_template('ipc.html',title='Остаток с учетом инфляции', inf_now=inf_now)
+    if request.method == 'POST':
+        try:
+            start_sum=int(request.form["input_text1"])
+            income=int(request.form["input_text2"])
+            n=int(request.form["input_text3"])
+            expences=int(request.form["input_text4"])
+            ipc=float(request.form["input_text5"])
+            result_number=(start_sum+n*income-n*expences)*((1/(ipc/100))**n);
+            result_number=round(result_number,2)
+            result_s="Результат: "+str(result_number)
+            return render_template('ipc.html', title='Остаток с учетом инфляции', result_s=result_s)
+        except:
+            pass
+    return render_template('ipc.html',title='Остаток с учетом инфляции',result_s="")
 
 
 @app.errorhandler(404)
