@@ -300,9 +300,9 @@ def statistics():
     data = []
     days_in_month_end = []
     try:
-        date = request.args["date_from"];
+        date = request.args["date_from"]
     except:
-        date = datetime.date.today()
+        date = datetime.date.today().strftime("%Y-%m")
     days_in_month_list = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     date_from = datetime.datetime.strptime(date,"%Y-%m").date()
     days_in_month = days_in_month_list[date_from.month]
@@ -353,6 +353,12 @@ def statistics():
                            days_in_month_end=days_in_month_end, data_start_plus=data_start_plus,
                            data_start_minus=data_start_minus)
 
+@app.route('/prediction', methods=['POST', 'GET'])
+@login_required
+def prediction():
+    dbase.getData(int(current_user.get_id()))
+    return render_template('prediction.html', title='Прогноз', list=dbase.getData(current_user.get_id()))
+
 
 @app.route('/avatar')
 @login_required
@@ -391,9 +397,9 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/ipc', methods=['POST', 'GET'])
+@app.route('/balance', methods=['POST', 'GET'])
 @login_required
-def ipc():
+def balance():
     if request.method == 'POST':
         try:
             start_sum=int(request.form["input_text1"])
@@ -405,7 +411,7 @@ def ipc():
             result_number=round(result_number,2)
             result_s="Результат: "+str(result_number)
             return render_template('ipc.html', title='Остаток с учетом инфляции', result_s=result_s)
-        except:
+        except: 
             pass
     return render_template('ipc.html',title='Остаток с учетом инфляции',result_s="")
 
