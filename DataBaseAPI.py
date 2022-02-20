@@ -216,8 +216,29 @@ class DataBaseAPI:
                 self.__user_data_table.c.user_id == user_id
             ).where(
                 between(self.__user_data_table.c.date,date_from_p,date_to_p)
-            ).order_by(self.__user_data_table.c.date.desc()).where(
+            ).where(
                 self.__user_data_table.c.category.in_(categories)
+            ).order_by(self.__user_data_table.c.date.desc())
+            select_result = self.__connection.execute(select_query)
+            if select_result is None:
+                flash("Пользователь не найден", category='alert alert-danger')
+                return False
+            return select_result
+        except BaseException as e:
+            print("Ошибка добавления записи" + str(e))
+            return False
+        return True
+
+    def getDataBetweenOfType(self, user_id,date_from,date_to,type):
+        try:
+            date_from_p=datetime.datetime.strptime(date_from,"%Y-%m-%d").date()
+            date_to_p = datetime.datetime.strptime(date_to, "%Y-%m-%d").date()
+            select_query = select([self.__user_data_table]).where(
+                self.__user_data_table.c.user_id == user_id
+            ).where(
+                between(self.__user_data_table.c.date,date_from_p,date_to_p)
+            ).order_by(self.__user_data_table.c.date.desc()).where(
+                self.__user_data_table.c.type==type
             )
             select_result = self.__connection.execute(select_query)
             if select_result is None:

@@ -7,7 +7,7 @@
 <h1>Прогнозирование расходов</h1>
 
 <div class="btn-group text-center d-flex">
-    <a href="{{url_for('prediction')}}" class="btn btn-outline-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Полиномиальная регрессия</a>
+    <a href="{{url_for('prediction')}}" class="btn btn-outline-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">ElasticNet регрессия</a>
     <a href="{{url_for('prediction')}}" class="btn btn-outline-primary active">Линейная регрессия</a>
   </div>
 
@@ -18,12 +18,12 @@
       <div>
         <div>
           <div class="btn-group text-center d-flex">
-            <a href="{{url_for('prediction')}}" class="btn btn-outline-primary active" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Полиномиальная регрессия</a>
+            <a href="{{url_for('prediction')}}" class="btn btn-outline-primary active" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">ElasticNet регрессия</a>
             <a href="{{url_for('prediction')}}" class="btn btn-outline-primary">Линейная регрессия</a>
           </div>
           <canvas id="PolimiMonth" width="200 !important" height="180 !important"></canvas>
         </div>
-        <h5>Какой-то умный текст по типу: ваши расходы к концу месяца составят 60 рублей.</h5>
+        <h5>График показывает, что прогнозные расходы за февраль составят {{pred_elastic}} руб.</h5>
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@
   <div>
     <canvas id="LinearMonth" width="200 !important" height="180 !important"></canvas>
   </div>
-<h5>Какой-то умный текст по типу: ваши расходы к концу месяца составят 50 рублей.</h5>
+<h5>График показывает, что прогнозные расходы за февраль составят {{pred_lin}} руб.</h5>
 
 
 <script>
@@ -45,7 +45,7 @@
         {
           label: "Расходы",
           backgroundColor: 'rgb(255, 99, 132)',
-          data: [2478,5267,734,784,433,1900, 2478,5267,734,784,433,1900],
+          data: {{list_lin}},
           radius: 5,
           tension: 0.2,
           interaction: {
@@ -58,14 +58,14 @@
     new Chart(document.getElementById("PolimiMonth"),
       {
     type: 'line',
-    label: "Прогнозирование расходов с помощью модели линейной регрессии",
+    label: "Прогнозирование расходов с помощью модели ElasticNet регрессии",
     data: {
       labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       datasets: [
         {
           label: "Расходы",
           backgroundColor: 'rgb(150, 212, 97)',
-          data: [1900, 433, 784, 734, 5267, 2478, 1900, 433, 784, 734, 5267, 2478],
+          data: {{list_elastic}},
           radius: 5,
           tension: 0.2,
           interaction: {

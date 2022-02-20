@@ -9,7 +9,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from UserLogin import UserLogin
 import requests
 from bs4 import BeautifulSoup as BS
+import numpy as np
+from sklearn.linear_model import LinearRegression, ElasticNet
 import csv
+import copy
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'isaktimurov'
@@ -360,12 +363,50 @@ def statistics():
     return render_template('statistics.html', title='Статистика', currentmonth=currentmonth,
                            days_in_month_end=days_in_month_end, data_start_plus=data_start_plus,
                            data_start_minus=data_start_minus, categsum=categsum[1:])
+def predict_linear(x,y,pred):
+    #[1, 2, 3, 4, 5, 6, 7, 8]
+    #[29, 30, 32, 31, 35, 32, 37, 33]
+    #[9, 10, 11]
+    x = np.array(x).reshape((-1, 1))
+    y = np.array(y).reshape((-1, 1))
+    model = LinearRegression()
+    model.fit(x, y)
+    return model.predict(np.array(pred).reshape((-1, 1)))
+
+def predict_elastic(x,y,pred):
+    #[1, 2, 3, 4, 5, 6, 7, 8]
+    #[29, 30, 32, 31, 35, 32, 37, 33]
+    #[9, 10, 11]
+    x = np.array(x).reshape((-1, 1))
+    y = np.array(y).reshape((-1, 1))
+    model = ElasticNet()
+    model.fit(x, y)
+    return model.predict(np.array(pred).reshape((-1, 1)))
 
 @app.route('/prediction', methods=['POST', 'GET'])
 @login_required
 def prediction():
-    dbase.getData(int(current_user.get_id()))
-    return render_template('prediction.html', title='Прогноз', list=dbase.getData(current_user.get_id()))
+    date_ym=datetime.date.today().strftime("%Y-%m")
+    date_cur=date_ym+"-01"
+    date_beg=datetime.datetime.strptime(date_cur,"%Y-%m-%d")
+    date_end=date_beg+relativedelta(months=1)-relativedelta(day=1)
+    list=[]
+    for i in range(11,0,-1):
+        date_from=date_beg-relativedelta(months=i)
+        date_to = date_end - relativedelta(months=i)
+        data=dbase.getDataBetweenOfType(int(current_user.get_id()),date_from.strftime("%Y-%m-%d"),date_to.strftime("%Y-%m-%d"),False)
+        s=0
+        for i in data:
+            s+=i.amount
+        list.append(s)
+    pred_elastic=predict_elastic([0,1, 2, 3, 4, 5, 6, 7, 8,9,10],list,[11])[0]
+    pred_lin = predict_linear([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], list, [11])[0][0]
+    #dbase.getData(int(current_user.get_id()))
+    list_lin = copy.deepcopy(list)
+    list_lin.append(pred_lin)
+    list_elastic = copy.deepcopy(list)
+    list_elastic.append(pred_elastic)
+    return render_template('prediction.html', title='Прогноз', list_lin=list_lin, list_elastic=list_elastic,pred_lin=round(pred_lin,2),pred_elastic=round(pred_elastic,2))
 
 
 @app.route('/avatar')
