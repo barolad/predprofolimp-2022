@@ -5,12 +5,6 @@
 <div class="container mt-2 mb-5" style="padding-bottom: 20px !important">
 <h1>Статистика</h1>
 
-<div class="btn-group text-center d-flex">
-  <a href="{{url_for('statistics')}}" class="btn btn-outline-primary active" aria-current="page">Графики</a>
-  <a href="{{url_for('balance')}}" class="btn btn-outline-primary">Остаток</a>
-  <a href="{{url_for('prediction')}}" class="btn btn-outline-primary">Прогноз</a>
-</div>
-
 <form action="statistics" method="get" class="row">
 <div class="col-12">
 <label for="exampleFormControlInput1" class="form-label">Выберите период</label>
@@ -18,53 +12,37 @@
 <input type="month" class="form-control" id="date_from" name="date_from" placeholder="Дата" required>
 </div>
 </div>
-
-<div class="col-12 mt-2">
-<div class="input-group">
-
-      <div class="input-group-text"><span class="material-icons">category</span></div>
-      <select id="inputState" class="form-select" multiple aria-label="multiple select example" aria-label="size 1 select example" name='category'>
-        <option value="m1">Еда и продукты</option>
-        <option value="m2">Дом и ремонт</option>
-        <option value="m3">Электроника</option>
-        <option value="m4">Хобби и развлечения</option>
-        <option value="m5">Одежда, обувь, аксессуары</option>
-        <option value="m6">Цветы и подарки</option>
-        <option value="m7">Обучение</option>
-        <option value="m8">Авто</option>
-        <option value="m9">Уход за собой</option>
-        <option value="m10">Кафе, бары и рестораны</option>
-        <option value="m11">Книги, кино, искусство</option>
-        <option value="p1">Зарплата</option>
-        <option value="p2">Дивиденды</option>
-        <option value="p3">Социальное пособие</option>
-        <option value="p4">Перевод</option>
-        <option value="p5">Возврат</option>
-        <option value="m12">Другое</option>
-      </select>
-    </div>
-  </div>
   <div class="col-12 mt-2 ">
       <button class="btn btn-primary mt-1" type="submit" style="width: 100%;">Найти</button>
   </div>
 </form>
 
 <div>
-    <canvas id="myChart"></canvas>
+  <h2> Общие данные за {{currentmonth}}</h2>
+    <canvas id="allMonth"></canvas>
 </div>
 
 <script>
-    const label = {{days_in_month_end}};
+    const linelabel = {{days_in_month_end}};
     const dataplus = {{data_start_plus}};
     const dataminus = {{data_start_minus}};
-
-    const data = {
-    labels: label,
+    new Chart(
+      document.getElementById('allMonth'),
+      {
+      type: 'line',
+      data: {
+    labels: linelabel,
     datasets: [{
     label: 'Расходы за {{currentmonth}}',
     backgroundColor: 'rgb(255, 99, 132)',
     borderColor: 'rgb(255, 99, 132)',
     data: dataminus,
+    pointBackgroundColor: 'rgb(255, 99, 132)',
+    radius: 5,
+    tension: 0.2,
+    interaction: {
+          intersect: false,
+        }
 
     },
     {
@@ -72,23 +50,39 @@
     backgroundColor: 'rgb(150, 212, 97)',
     borderColor: 'rgb(150, 212, 97)',
     data: dataplus,
-
-    }
-    ]
-    };
-    const config = {
-      type: 'line',
-      data: data,
+    pointBackgroundColor: 'rgb(150, 212, 97)',
+    radius: 5,
+    tension: 0.2,
+    interaction: {
+          intersect: false,
+        }
+    }]},
       options: {}
-    };
-  </script>
- <script>
-    const myChart = new Chart(
-      document.getElementById('myChart'),
-      config
+    }
     );
-  </script> 
-
+  </script>
+<div>
+  <h2> Расходы по категориям</h2>
+  <canvas id="allCateg"></canvas>
+</div>
+<script>
+const categsum= {{categsum}} 
+new Chart(document.getElementById("allCateg"), {
+    type: 'doughnut',
+    label: "Расходы",
+    data: {
+      labels: ["Еда и продукты", "Дом и ремонт", "Электроника", "Хобби и развлечения", "Одежда, обувь, аксессуары", "Цветы и подарки", "Обучение", "Авто", "Уход за собой", "Кафе, бары, рестораны", "Книги, кино, искусство", "Другое"],
+      datasets: [
+        {
+          label: "Расходы",
+          backgroundColor: ["#fd7f6f", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#ffee65", "#beb9db", "#fdcce5", "#8bd3c7", "#54bebe", "#599e94", "#9080ff"],
+          data: categsum
+        }
+      ],
+    },
+    
+    });
+</script>
 </div>
 
 {% endblock %}
