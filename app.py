@@ -143,6 +143,14 @@ def login():
     return render_template('login.html', title='Вход в приложение')
 
 
+@app.route("/delete", methods=["POST", "GET"])
+@login_required
+def deli():
+    return redirect("/history")
+
+
+
+
 @app.route("/add_paymentminus", methods=["POST", "GET"])
 @login_required
 def addPaymentminus():
@@ -293,7 +301,7 @@ def history():
         {"date": "Дата", "time": "Время", "category": "Категория", "description": "Описание", "amount": "Сумма"})
     writer.writerows(data_to_export[::-1])
     csvf.close()
-    return render_template('history.html', title='История операций', list=data[::-1], lenlist=lenlist,
+    return render_template('history.html', title='История операций', list=data[::], lenlist=lenlist,
                            currentyear=currentyyear, login=current_user.getName())
 
 
