@@ -49,12 +49,14 @@ def index():
         title = (title[0].text).split('%')
         title.pop(1)
         O.append(title)
+        
     inf_future = str(O[0])[2:-2]
     inf_now = str(O[1])[2:-2]
     date = datetime.date.today()
     month_list = ['', 'январе', 'феврале', 'марте', 'апреле', 'мае', 'июне',
                   'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре']
     currentmonth = month_list[date.month]
+    befmonth = month_list[date.month-1]
 
     # общий счёт
     date_from = ""
@@ -122,7 +124,8 @@ def index():
     return render_template('index.html', title='WEBUDGET', inf_future=inf_future, inf_now=inf_now,
                            currentmonth=currentmonth, bankamount=bankamount, minuses=minuses,
                            plusess=plusess, bankplus=bankplus, bankminus=bankminus,
-                           bankpluscur=bankplustwo, bankminuscur=bankminustwo)
+                           bankpluscur=bankplustwo, bankminuscur=bankminustwo,
+                           befmonth=befmonth)
 
 
 @app.route("/login", methods=["POST", "GET"])
@@ -141,14 +144,6 @@ def login():
         flash("Неверная пара логин/пароль", category='alert alert-danger')
 
     return render_template('login.html', title='Вход в приложение')
-
-
-@app.route("/delete", methods=["POST", "GET"])
-@login_required
-def deli():
-    return redirect("/history")
-
-
 
 
 @app.route("/add_paymentminus", methods=["POST", "GET"])
@@ -398,6 +393,13 @@ def prediction():
     date_cur=date_ym+"-01"
     date_beg=datetime.datetime.strptime(date_cur,"%Y-%m-%d")
     date_end=date_beg+relativedelta(months=1)-relativedelta(day=1)
+
+    date = datetime.date.today()
+    month_list = ['', 'январе', 'феврале', 'марте', 'апреле', 'мае', 'июне',
+                  'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре']
+    currentmonth = month_list[date.month]
+    befmonth = month_list[date.month-1]
+
     list=[]
     for i in range(11,0,-1):
         date_from=date_beg-relativedelta(months=i)
@@ -414,7 +416,10 @@ def prediction():
     list_lin.append(pred_lin)
     list_elastic = copy.deepcopy(list)
     list_elastic.append(pred_elastic)
-    return render_template('prediction.html', title='Прогноз', list_lin=list_lin, list_elastic=list_elastic,pred_lin=round(pred_lin,2),pred_elastic=round(pred_elastic,2))
+    return render_template('prediction.html', title='Прогноз', 
+                            list_lin=list_lin, list_elastic=list_elastic,
+                            pred_lin=round(pred_lin,2),pred_elastic=round(pred_elastic,2),
+                            currentmonth=currentmonth)
 
 
 @app.route('/avatar')
